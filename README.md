@@ -16,3 +16,5 @@ webserver
 2. sqlite를 postgresql로 전환
 
 3. access_token을 어떻게 저장하여 사용할지
+
+4. git version test
