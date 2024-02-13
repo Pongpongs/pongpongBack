@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Front Page</title>
+		<style>
+			.button {
+				display: inline-block;
+				padding: 10px 20px;
+				background-color: green;
+				color: black;
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Web Front Page</h1>
+		<div>
+			<a href="{% url 'oauth:oauth_login' %}" class="button">login</a>
+		</div>
+	</body>
+</html>
