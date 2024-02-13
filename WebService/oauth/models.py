@@ -9,7 +9,6 @@ class UserProfile(models.Model):
 
 class UserAccessToken(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='access_token')
-    token = models.CharField(max_length=1024)  # Length might need to be adjusted based on the token length
     created_at = models.DateTimeField(auto_now_add=True)
     expires_in = models.IntegerField(default=3600)  # Default expiry time in seconds, adjust as needed
 

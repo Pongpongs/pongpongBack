@@ -2,12 +2,22 @@ from django.shortcuts import redirect
 from . import models
 import requests
 from urllib.parse import urlencode
+import os
+import configparser
 
 # Create your views here.
+def load_config():
+	config = configparser.ConfigParser()
+	config.read('config.ini')
+	return config
+
+
 def oauth_login(request):
+	config = load_config()
+	client_id = config['OAuth']['client_id']
 	params = {
-		'client_id': 'u-s4t2ud-12a8b2c44b3826f8b6d69f201be6df88df1fd800042d274025450ca2d74739a1',
-        'redirect_uri': 'http://localhost:8000/oauth/callback/',
+		'client_id': client_id,
+		'redirect_uri': 'http://localhost:8000/oauth/callback/',
         'response_type': 'code',
         'scope': 'public'  # Include scopes needed to access /v2/me
     }
@@ -17,11 +27,14 @@ def oauth_login(request):
 	return redirect(auth_url)
 
 def get_access_token(code):
+	config = load_config()
+	client_id = config['OAuth']['client_id']
+	client_secret = config['OAuth']['client_secret']
 	token_request_data = {
 		'grant_type': 'authorization_code',
 		'code': code,
-		'client_id': 'u-s4t2ud-12a8b2c44b3826f8b6d69f201be6df88df1fd800042d274025450ca2d74739a1',
-		'client_secret': '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',
+		'client_id': client_id,
+		'client_secret': client_secret,
 		'redirect_uri': 'http://localhost:8000/oauth/callback/'
 	}
 	# token의 엔드 포인트 (데이터 교환 장소)
@@ -57,18 +70,23 @@ def oauth_callback(request):
 
 def registerUserinDB(access_token):
 	# extract user_info with access_token
+	user_info = get_user_info(access_token)
 	# parsing specific info from userinfo
+	user_id = user_info.get('id')
+	user_login = user_info.get('login')
+	user_email = user_info.get('email')
+	user_first_name = user_info.get('first_name')
+	user_last_name = user_info.get('last_name')
+	user_full_name = user_info.get('usual_full_name')
 	# compare userinfo with database's userinfo
+	
 	# if already in the database
 	# return nothing
 	# else
 	# then register
-	user_info = get_user_info(access_token)
-	print(user_info.get('id'))
-	print(user_info.get('login'))
-	print(user_info.get('first_name'))
-	print(user_info.get('last_name'))
-	print(user_info.get('usual_full_name'))
+	print(user_id)
+	print(user_email)
+	print(user_full_name)
 	return None
 
 def get_user_personal_info(access_token):
