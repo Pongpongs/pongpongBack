@@ -39,9 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 	"django_otp",
 	"django_otp.plugins.otp_totp",
-	"two_factor",
+	# "two_factor", # admin 페이지 접근 불가능하게 만드는 원인
 	"board",
 	"oauth",
+	"sslserver",
 ]
 
 MIDDLEWARE = [
@@ -79,20 +80,15 @@ WSGI_APPLICATION = "WebService.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'pongpongdb',
+        'USER': 'root',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': BASE_DIR / 'db.postgresql',
-#         'USER': 'extralee',
-#         'PASSWORD': '1234'
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -128,3 +124,8 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# SSL server settings
+# 도커에서 실행할 때 직접 생성해서 마운트하는 방식 아래는 테스트 때만 사용
+# SSLSERVER_CERTIFICATE = "/Users/extralee/Desktop/born2code/9.ft_transcendence/pongpongBack/WebService/django.crt"
+# SSLSERVER_PRIVATE_KEY = "/Users/extralee/Desktop/born2code/9.ft_transcendence/pongpongBack/WebService/django.key"
