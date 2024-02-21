@@ -17,5 +17,14 @@
 		<div>
 			<a href="{% url 'oauth:oauth_login' %}" class="button">login</a>
 		</div>
+		{% if messages %}
+		<div class="messages">
+    		{% for message in messages %}
+    		<div class="{{ message.tags }}">
+        		{{ message }}
+    		</div>
+    		{% endfor %}
+		</div>
+		{% endif %}
 	</body>
 </html>
