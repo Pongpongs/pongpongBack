@@ -1,11 +1,16 @@
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect
 from .models import UserProfile
 import requests
 from urllib.parse import urlencode
 import os
+from django.contrib import messages
 
 # Create your views here.
 def oauth_login(request):
+	# GET 요청만 처리, 예기치 않은 요청 메소드는 거부
+	if request.method != 'GET':
+		return HttpResponseNotAllowed(['GET'])
 	client_id = os.getenv('CLIENT_ID')
 	params = {
 		'client_id': client_id,
@@ -13,9 +18,7 @@ def oauth_login(request):
         'response_type': 'code',
         'scope': 'public'  # Include scopes needed to access /v2/me
     }
-    # Construct the authorization URL
 	auth_url = f"https://api.intra.42.fr/oauth/authorize?{urlencode(params)}"
-    # Redirect the user to the authorization server
 	return redirect(auth_url)
 
 def get_access_token(code):
@@ -26,31 +29,48 @@ def get_access_token(code):
 		'code': code,
 		'client_id': client_id,
 		'client_secret': client_secret,
-		'redirect_uri': 'https://localhost:8000/oauth/callback/'
+		'redirect_uri': 'https://localhost:8000/oauth/callback/',
+		'HTTP_REFERER': 'https://localhost:8000'
 	}
-	# token의 엔드 포인트 (데이터 교환 장소)
 	token_endpoint = 'https://api.intra.42.fr/oauth/token'
-	# access_token을 발급받기 위해 token_request_data로 42서버에서 검증을 거침
-	response = requests.post(token_endpoint, data=token_request_data)
-	token_data = response.json()
-	return token_data.get('access_token')
+	try:
+		response = requests.post(token_endpoint, data=token_request_data)
+		if response.status_code == 200:
+			token_data = response.json()
+			return token_data.get('access_token'), None
+		else:
+			# Http Code = Status Code : 401, 403, 404, 422, 500
+			# status_code에 대한 에러 처리
+			http_code = response.status_code
+	except requests.ConnectionError:
+		# Http Code != Status Code : Connection refused, Reason : "Most likely cause is not using HTTPS"
+		# 네트워크 연결 실패에 대한 에러 처리
+		http_code = 500
+	return None, http_code
 
 def oauth_callback(request):
+	# GET 요청만 처리, 예기치 않은 요청 메소드는 거부
+	if request.method != 'GET':
+		return HttpResponseNotAllowed(['GET'])
 	access_code = request.GET.get('code')
 	if not access_code:
 		# 접근 코드 발급 실패시 보일 화면
 		return redirect('/access_code_erorr/')
 	# 2FA 인증 위치
-	access_token = get_access_token(access_code)
+	access_token, status_code = get_access_token(access_code)
 	if not access_token:
 		# 토큰 발급 실패시 보일 화면
-		return redirect('/token_error/')	
+		error_message = f"Login failed with error code: {status_code}"
+		messages.add_message(request, messages.ERROR, error_message)
+		return redirect('/front/')
 	# 토큰으로 유저 정보 획득
 	user_info = get_user_info(access_token)
 	# get_token_info(access_token) # 토큰 정보 추출
-	registerUserinDB(user_info) # db에 유저 등록 (이미 있다면 스킵)
+	# db에 유저 등록 (이미 있다면 스킵)
+	registerUserinDB(user_info)
 	# print_all_users() # db에 등록된 모든 유저 출력
-	return redirect('/index/') # 로그인 성공시 보일 첫 화면
+	# 로그인 성공시 보일 첫 화면
+	return redirect('/index/')
 
 def registerUserinDB(user_info):
 	ids = user_info.get('id')
