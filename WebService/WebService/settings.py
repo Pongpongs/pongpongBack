@@ -129,3 +129,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # 도커에서 실행할 때 직접 생성해서 마운트하는 방식 아래는 테스트 때만 사용
 # SSLSERVER_CERTIFICATE = "/Users/extralee/Desktop/born2code/9.ft_transcendence/pongpongBack/WebService/django.crt"
 # SSLSERVER_PRIVATE_KEY = "/Users/extralee/Desktop/born2code/9.ft_transcendence/pongpongBack/WebService/django.key"
+
+CACHES = {
+	"default": {
+		"BACKEND": "django_redis.cache.RedisCache",
+		"LOCATION": "redis://127.0.0.1:6379/1",
+		"OPTIONS": {
+			"CLIENT_CLASS": "django_redis.client.DefaultClient",
+		}
+	}
+}
