@@ -4,8 +4,6 @@ from .models import Post
 from .forms import PostForm
 
 # Create your views here.
-# 아래 페이지는 로그인후 접속 가능하게 만들어야 하는가?
-# 로그인후 접속 및 사용 가능하게 하는 것을 front, back 중에서 누가 담당해야할까
 def front_view(request):
 	return render(request, 'board/front.html')
 
@@ -31,3 +29,4 @@ def delete_post(request, post_id):
 		post.delete()
 		return HttpResponseRedirect('/posts/')
 	return HttpResponse("Method not allowed", status=405)
+
