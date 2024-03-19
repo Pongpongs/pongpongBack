@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,15 +29,18 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
+	'daphne',
+	'board',
+	'oauth',
+	'game',
+	'chat',
+	'sslserver',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'sslserver',
-    'board',
-    'oauth',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +72,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'WebService.wsgi.application'
+ASGI_APPLICATION = 'WebService.asgi.application'
 
+CHANNEL_LAYERS = {
+	"default": {
+		"BACKEND": "channels_redis.core.RedisChannelLayer",
+		"CONFIG": {
+			"hosts": [("127.0.0.1", 6379)],
+		},
+	},
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -119,10 +132,14 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+	os.path.join(BASE_DIR, 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['ec2-43-200-180-40.ap-northeast-2.compute.amazonaws.com', '43.200.180.40']
+ALLOWED_HOSTS = ['ec2-43-200-228-128.ap-northeast-2.compute.amazonaws.com', '43.200.228.128']
