@@ -51,6 +51,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state = game_manager.get_or_create_game(self.room_name)
         self.game_state['connected_clients_count'] += 1  # 클라이언트 수 증가
 
+        self.player_number = self.game_state['connected_clients_count']
+
         if self.game_state['connected_clients_count'] == 2:
             await asyncio.sleep(3)  # 클라이언트가 2개 연결된 후 3초 기다립니다.
             if not self.game_state['updating_ball_position']:
@@ -58,38 +60,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 asyncio.create_task(self.ball_position_updater())
 
     async def disconnect(self, close_code):
+        self.game_state['connected_clients_count'] -= 1
+        if self.game_state['connected_clients_count'] == 0:
+            game_manager.end_game(self.room_name)
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-        game_manager.end_game(self.room_name)
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         print(message, " ", self.channel_name)
 
-        # 계산식
-        if message == 'a':
-            # 왼쪽으로 이동할 때는 'x' 좌표를 감소시킵니다.
-            self.game_state['play_bar1_position']['x'] = max(-9,
-                                                             self.game_state['play_bar1_position']['x'] - 0.4)
-        elif message == 'd':
-            # 오른쪽으로 이동할 때는 'x' 좌표를 증가시킵니다.
-            self.game_state['play_bar1_position']['x'] = min(
-                9, self.game_state['play_bar1_position']['x'] + 0.4)
+        if self.player_number == 1:
+            if message == 'a':
+                self.game_state['play_bar1_position']['x'] = max(
+                    -9, self.game_state['play_bar1_position']['x'] - 0.4)
+            elif message == 'd':
+                self.game_state['play_bar1_position']['x'] = min(
+                    9, self.game_state['play_bar1_position']['x'] + 0.4)
 
-        # 두 번째 플레이어의 바 이동
-        if message == 'j':
-            # 왼쪽으로 이동할 때는 'x' 좌표를 감소시킵니다.
-            self.game_state['play_bar2_position']['x'] = max(-9,
-                                                             self.game_state['play_bar2_position']['x'] - 0.4)
-        elif message == 'l':
-            # 오른쪽으로 이동할 때는 'x' 좌표를 증가시킵니다.
-            self.game_state['play_bar2_position']['x'] = min(
-                9, self.game_state['play_bar2_position']['x'] + 0.4)
-        pass
+        elif self.player_number == 2:
+            if message == 'a':
+                self.game_state['play_bar2_position']['x'] = max(
+                    -9, self.game_state['play_bar2_position']['x'] - 0.4)
+            elif message == 'd':
+                self.game_state['play_bar2_position']['x'] = min(
+                    9, self.game_state['play_bar2_position']['x'] + 0.4)
+
+        # pass
         # self._update_ball_position()
 
     async def _update_ball_position(self):
