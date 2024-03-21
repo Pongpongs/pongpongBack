@@ -123,10 +123,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if ChatConsumer.ball_position['x'] <= -10 or ChatConsumer.ball_position['x'] >= 10:
             # collision on upper side wall, player2 score up
             if ChatConsumer.ball_position['x'] > 10:
-                ChatConsumer.score_player4 += 1
+                ChatConsumer.score_player3 += 1
             # collision on bottom side wall,player1 score up
             elif ChatConsumer.ball_position['x'] < -10:
-                ChatConsumer.score_player3 += 1
+                ChatConsumer.score_player4 += 1
 
             ChatConsumer.ball_position = {'x': 0, 'y': 0}
             ChatConsumer.play_bar1_position = {'x': 0, 'y': 9}
