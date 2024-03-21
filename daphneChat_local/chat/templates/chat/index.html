@@ -6,19 +6,30 @@
 	</head>
 	<body>
 		What chat room would you like to enter?<br>
-		<input id="room-name-input" type="text" size="100"><br>
-		<input id="room-name-submit" type="button" value="Enter"><br>
+		Nickname 1: <input id="nickname1-input" type="text" size="45"><br>
+		Nickname 2: <input id="nickname2-input" type="text" size="45"><br>
+		Room Name: <input id="room-name-input" type="text" size="100"><br>
+		<input id="room-name-submit" type="button" value="Enter" disabled><br>
 
 		<script>
 			document.querySelector('#room-name-input').focus();
-			document.querySelector('#room-name-input').onkeyup = function(event) {
-				if (event.key === 'Enter') {
-					document.querySelector('#room-name-submit').click();
-				}
-			};
+			
+			function validateInput() {
+				var nickname1 = document.querySelector('#nickname1-input').value.trim();
+				var nickname2 = document.querySelector('#nickname2-input').value.trim();
+				var roomName = document.querySelector('#room-name-input').value.trim();
+				// 모든 입력 필드에 값이 있을 경우에만 'Enter' 버튼을 활성화
+				document.querySelector('#room-name-submit').disabled = !(nickname1 && nickname2 && roomName);
+			}
+
+			// 모든 입력 필드에 대해 입력 시 검증 함수 호출
+			document.querySelector('#nickname1-input').onkeyup = 
+			document.querySelector('#nickname2-input').onkeyup = 
+			document.querySelector('#room-name-input').onkeyup = validateInput;
+
 			document.querySelector('#room-name-submit').onclick = function(event) {
 				var roomName = document.querySelector('#room-name-input').value;
-				window.location.pathname = '/chat/' + roomName + '/';
+				window.location.pathname = '/chat/' + encodeURIComponent(roomName) + '/';
 			};
 		</script>
 	</body>

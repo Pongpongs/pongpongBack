@@ -46,8 +46,7 @@
 		{{ room_name|json_script:"room-name" }}
 
 		<div id="gameOverMessage" style="display: none;">GAME OVER!!!</div>
-
-
+    </div>
 		<script>
 			const roomName = JSON.parse(document.getElementById('room-name').textContent);
 			const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
@@ -149,8 +148,7 @@
 				Player 1: <span id="scorePlayer1">0</span> | 
 				Player 2: <span id="scorePlayer2">0</span>
 		</div>
-
 		<div id="gameContainer" style="width: 800px; height: 100px; margin: auto;"></div>
-
 	</body>
 </html>
+
