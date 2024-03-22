@@ -71,34 +71,35 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+        # message = text_data_json["message"]
+        keyStates = text_data_json
         # print(message, " ", self.channel_name)
 
-        if message == 'q':
+        if keyStates.get('q'):
             self.game_state['play_bar1_position']['x'] = max(
                 -9, self.game_state['play_bar1_position']['x'] - 0.4)
-        elif message == 'e':
+        if keyStates.get('e'):
             self.game_state['play_bar1_position']['x'] = min(
                 9, self.game_state['play_bar1_position']['x'] + 0.4)
 
-        if message == 'i':
+        if keyStates.get('i'):
             self.game_state['play_bar2_position']['x'] = max(
                 -9, self.game_state['play_bar2_position']['x'] - 0.4)
-        elif message == 'p':
+        if keyStates.get('p'):
             self.game_state['play_bar2_position']['x'] = min(
                 9, self.game_state['play_bar2_position']['x'] + 0.4)
 
-        if message == 'z':
+        if keyStates.get('z'):
             self.game_state['play_bar4_position']['y'] = max(
                 -9, self.game_state['play_bar4_position']['y'] - 0.4)
-        elif message == 'c':
+        if keyStates.get('c'):
             self.game_state['play_bar4_position']['y'] = min(
                 9, self.game_state['play_bar4_position']['y'] + 0.4)
 
-        if message == 'b':
+        if keyStates.get('b'):
             self.game_state['play_bar3_position']['y'] = max(
                 -9, self.game_state['play_bar3_position']['y'] - 0.4)
-        elif message == 'm':
+        if keyStates.get('m'):
             self.game_state['play_bar3_position']['y'] = min(
                 9, self.game_state['play_bar3_position']['y'] + 0.4)
 
@@ -121,8 +122,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 and self.game_state['play_bar2_position']['x'] - bar_width / 2 < self.game_state['ball_position']['x'] < self.game_state['play_bar2_position']['x'] + bar_width / 2:
             self.game_state['ball_velocity']['y'] *= -1  # y 방향 반전
 
-        if self.game_state['play_bar3_position']['x'] - ball_radius < self.game_state['ball_position']['x'] < self.game_state['play_bar2_position']['x'] + ball_radius \
-                and self.game_state['play_bar3_position']['y'] - bar_width / 2 < self.game_state['ball_position']['y'] < self.game_state['play_bar2_position']['y'] + bar_width / 2:
+        if self.game_state['play_bar3_position']['x'] - ball_radius < self.game_state['ball_position']['x'] < self.game_state['play_bar3_position']['x'] + ball_radius \
+                and self.game_state['play_bar3_position']['y'] - bar_width / 2 < self.game_state['ball_position']['y'] < self.game_state['play_bar3_position']['y'] + bar_width / 2:
             self.game_state['ball_velocity']['x'] *= -1  # y 방향 반전
 
         if self.game_state['play_bar4_position']['x'] - ball_radius < self.game_state['ball_position']['x'] < self.game_state['play_bar4_position']['x'] + ball_radius \
