@@ -1,0 +1,85 @@
+<!-- <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Chat Rooms</title>
+	</head>
+	<body>
+		What chat room would you like to enter?<br>
+		<input id="room-name-input" type="text" size="100"><br>
+		<input id="room-name-submit" type="button" value="Enter"><br>
+
+		<script>
+			document.querySelector('#room-name-input').focus();
+			document.querySelector('#room-name-input').onkeyup = function(event) {
+				if (event.key === 'Enter') {
+					document.querySelector('#room-name-submit').click();
+				}
+			};
+			document.querySelector('#room-name-submit').onclick = function(event) {
+				var roomName = document.querySelector('#room-name-input').value;
+				window.location.pathname = '/chat/' + roomName + '/';
+			};
+		</script>
+	</body>
+</html>
+ -->
+
+ <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Chat Rooms</title>
+		<style>
+			.player-desc {
+				font-weight: bold;
+			}
+			.player1 { color: green; }  /* Player 1 - 초록 */
+			.player2 { color: red; }    /* Player 2 - 빨강 */
+			.player3 { color: blue; } /* Player 3 - 노랑 */
+			.player4 { color: yellow; }   /* Player 4 - 파랑 */
+		</style>
+	</head>
+	<body>
+		What chat room would you like to enter?<br>
+		Nickname 1: <input id="nickname1-input" type="text" size="45"><br>
+		Nickname 2: <input id="nickname2-input" type="text" size="45"><br>
+		Nickname 3: <input id="nickname3-input" type="text" size="45"><br>
+		Nickname 4: <input id="nickname4-input" type="text" size="45"><br>
+		Room Name: <input id="room-name-input" type="text" size="100"><br>
+		<input id="room-name-submit" type="button" value="Enter" disabled><br>
+
+		<div id="control-descriptions">
+			<div class="player-desc player1">Player 1 (Green): Move with 'Q' and 'E'</div>
+			<div class="player-desc player2">Player 2 (Red): Move with 'I' and 'P'</div>
+			<div class="player-desc player3">Player 3 (Yellow): Move with 'B' and 'M'</div>
+			<div class="player-desc player4">Player 4 (Blue): Move with 'Z' and 'C'</div>
+		</div>
+
+		<script>
+			document.querySelector('#room-name-input').focus();
+			
+			function validateInput() {
+				var nickname1 = document.querySelector('#nickname1-input').value.trim();
+				var nickname2 = document.querySelector('#nickname2-input').value.trim();
+				var nickname3 = document.querySelector('#nickname3-input').value.trim();
+				var nickname4 = document.querySelector('#nickname4-input').value.trim();
+				var roomName = document.querySelector('#room-name-input').value.trim();
+				// 모든 입력 필드에 값이 있을 경우에만 'Enter' 버튼을 활성화
+				document.querySelector('#room-name-submit').disabled = !(nickname1 && nickname2 && nickname3 && nickname4 && roomName);
+			}
+
+			// 모든 입력 필드에 대해 입력 시 검증 함수 호출
+			document.querySelector('#nickname1-input').onkeyup = 
+			document.querySelector('#nickname2-input').onkeyup = 
+			document.querySelector('#nickname3-input').onkeyup = 
+			document.querySelector('#nickname4-input').onkeyup = 
+			document.querySelector('#room-name-input').onkeyup = validateInput;
+
+			document.querySelector('#room-name-submit').onclick = function(event) {
+				var roomName = document.querySelector('#room-name-input').value;
+				window.location.pathname = '/chat/' + encodeURIComponent(roomName) + '/';
+			};
+		</script>
+	</body>
+</html>
