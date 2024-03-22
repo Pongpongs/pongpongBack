@@ -67,21 +67,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+        # message = text_data_json["message"]
         # print(message, " ", self.channel_name)
+        keyStates = text_data_json  # 이제 keyStates는 {"a": true/false, "d": true/false, "j": true/false, "l": true/false} 형태입니다.
 
-        if message == 'a':
-            self.game_state['play_bar1_position']['x'] = max(
-                -9, self.game_state['play_bar1_position']['x'] - 0.4)
-        if message == 'd':
-            self.game_state['play_bar1_position']['x'] = min(
-                9, self.game_state['play_bar1_position']['x'] + 0.4)
-        if message == 'j':
-            self.game_state['play_bar2_position']['x'] = max(
-                -9, self.game_state['play_bar2_position']['x'] - 0.4)
-        if message == 'l':
-            self.game_state['play_bar2_position']['x'] = min(
-                9, self.game_state['play_bar2_position']['x'] + 0.4)
+        # 각 키에 대한 상태 확인 및 처리
+        if keyStates.get('a'):
+            self.game_state['play_bar1_position']['x'] = max(-9, self.game_state['play_bar1_position']['x'] - 0.4)
+        if keyStates.get('d'):
+            self.game_state['play_bar1_position']['x'] = min(9, self.game_state['play_bar1_position']['x'] + 0.4)
+        if keyStates.get('j'):
+            self.game_state['play_bar2_position']['x'] = max(-9, self.game_state['play_bar2_position']['x'] - 0.4)
+        if keyStates.get('l'):
+            self.game_state['play_bar2_position']['x'] = min(9, self.game_state['play_bar2_position']['x'] + 0.4)
+
+        # if message == 'a':
+        #     self.game_state['play_bar1_position']['x'] = max(
+        #         -9, self.game_state['play_bar1_position']['x'] - 0.4)
+        # if message == 'd':
+        #     self.game_state['play_bar1_position']['x'] = min(
+        #         9, self.game_state['play_bar1_position']['x'] + 0.4)
+        # if message == 'j':
+        #     self.game_state['play_bar2_position']['x'] = max(
+        #         -9, self.game_state['play_bar2_position']['x'] - 0.4)
+        # if message == 'l':
+        #     self.game_state['play_bar2_position']['x'] = min(
+        #         9, self.game_state['play_bar2_position']['x'] + 0.4)
 
     async def _update_ball_position(self):
         # 공 위치 업데이트
