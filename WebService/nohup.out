@@ -1,0 +1,55 @@
+2024-03-22 14:11:13,245 INFO     Starting server at ssl:8000:privateKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.key:certKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.crt
+2024-03-22 14:11:13,247 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2024-03-22 14:11:13,247 INFO     Configuring endpoint ssl:8000:privateKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.key:certKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.crt
+2024-03-22 14:11:13,256 INFO     Listening on TCP address 0.0.0.0:8000
+2024-03-22 14:12:00,199 ERROR    Task exception was never retrieved
+future: <Task finished name='Task-18' coro=<GameConsumer.ball_position_updater() done, defined at /home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py:138> exception=AttributeError("'GameManager' object has no attribute 'end_game'")>
+Traceback (most recent call last):
+  File "/home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py", line 154, in ball_position_updater
+    game_manager.end_game(self.room_name)
+AttributeError: 'GameManager' object has no attribute 'end_game'
+2024-03-22 14:12:26,466 ERROR    Task exception was never retrieved
+future: <Task finished name='Task-5085' coro=<GameConsumer.ball_position_updater() done, defined at /home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py:138> exception=AttributeError("'GameManager' object has no attribute 'end_game'")>
+Traceback (most recent call last):
+  File "/home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py", line 154, in ball_position_updater
+    game_manager.end_game(self.room_name)
+AttributeError: 'GameManager' object has no attribute 'end_game'
+2024-03-22 14:12:41,682 ERROR    Task exception was never retrieved
+future: <Task finished name='Task-9536' coro=<GameConsumer.ball_position_updater() done, defined at /home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py:138> exception=AttributeError("'GameManager' object has no attribute 'end_game'")>
+Traceback (most recent call last):
+  File "/home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py", line 154, in ball_position_updater
+    game_manager.end_game(self.room_name)
+AttributeError: 'GameManager' object has no attribute 'end_game'
+2024-03-22 14:12:55,897 ERROR    Task exception was never retrieved
+future: <Task finished name='Task-14739' coro=<GameConsumer.ball_position_updater() done, defined at /home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py:138> exception=AttributeError("'GameManager' object has no attribute 'end_game'")>
+Traceback (most recent call last):
+  File "/home/ubuntu/pongpongBack/WebService/./game/offoneconsumers.py", line 154, in ball_position_updater
+    game_manager.end_game(self.room_name)
+AttributeError: 'GameManager' object has no attribute 'end_game'
+2024-03-22 14:16:26,730 INFO     Killed 0 pending application instances
+127.0.0.1:40570 - - [22/Mar/2024:14:11:19] "GET /game" 301 -
+127.0.0.1:40576 - - [22/Mar/2024:14:11:19] "GET /game/" 200 1661
+127.0.0.1:40582 - - [22/Mar/2024:14:11:23] "GET /game/offline/oneversone/lobby/" 200 5263
+127.0.0.1:40584 - - [22/Mar/2024:14:11:23] "WSCONNECTING /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:40584 - - [22/Mar/2024:14:11:23] "WSCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:45210 - - [22/Mar/2024:14:11:39] "GET /game" 301 -
+127.0.0.1:45222 - - [22/Mar/2024:14:11:39] "GET /game/" 200 1661
+127.0.0.1:35532 - - [22/Mar/2024:14:11:50] "GET /game/offline/oneversone/lobby/" 200 5263
+127.0.0.1:35544 - - [22/Mar/2024:14:11:50] "WSCONNECTING /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:35544 - - [22/Mar/2024:14:11:50] "WSCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:40584 - - [22/Mar/2024:14:12:00] "WSDISCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:54918 - - [22/Mar/2024:14:12:06] "GET /game/offline/oneversone/lobby/" 200 5263
+127.0.0.1:54928 - - [22/Mar/2024:14:12:06] "WSCONNECTING /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:54928 - - [22/Mar/2024:14:12:06] "WSCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:58888 - - [22/Mar/2024:14:12:21] "GET /game/offline/oneversone/lobby/" 200 5263
+127.0.0.1:54928 - - [22/Mar/2024:14:12:21] "WSDISCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:58890 - - [22/Mar/2024:14:12:21] "WSCONNECTING /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:58890 - - [22/Mar/2024:14:12:21] "WSCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:58890 - - [22/Mar/2024:14:12:23] "WSDISCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:35544 - - [22/Mar/2024:14:12:26] "WSDISCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:43312 - - [22/Mar/2024:14:13:26] "GET /game" 301 -
+127.0.0.1:43326 - - [22/Mar/2024:14:13:26] "GET /game/" 200 1661
+127.0.0.1:43338 - - [22/Mar/2024:14:13:30] "GET /game/offline/oneversone/lobby/" 200 5263
+127.0.0.1:43348 - - [22/Mar/2024:14:13:30] "WSCONNECTING /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:43348 - - [22/Mar/2024:14:13:30] "WSCONNECT /ws/game/offline/oneversone/lobby/" - -
+127.0.0.1:43348 - - [22/Mar/2024:14:16:20] "WSDISCONNECT /ws/game/offline/oneversone/lobby/" - -

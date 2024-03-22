@@ -33,7 +33,6 @@ INSTALLED_APPS = [
 	'board',
 	'oauth',
 	'game',
-	'chat',
 	'sslserver',
     'django.contrib.admin',
     'django.contrib.auth',

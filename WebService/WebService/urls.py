@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('oauth.urls')),
 #    path('', include('board.urls')),
-	path('chat/', include('chat.urls')),
+	# 아래의 path 삭제 예정, SPA방식이기 때문
+	path('game/', include('game.urls')),
 ]
