@@ -6,7 +6,7 @@
 	<head>
 		
 		<meta charset="utf-8"/>
-		<title>Chat Room</title>
+		<title>Game Room</title>
 		<script type="importmap">
 			{
 					"imports": {
@@ -37,12 +37,11 @@
 		</style>
 
 		
-		<script type="module" src="{% static 'js/offoneremoteGame.js' %}" defer></script>
+		<script type="module" src="{% static 'js/on2premoteGame.js' %}" defer></script>
 
 	</head>
 
 	<body>
-		
 		{{ room_name|json_script:"room-name" }}
 
 		<div id="gameOverMessage" style="display: none;">GAME OVER!!!</div>
@@ -60,26 +59,16 @@
         
       var scoreBoard = {p1 : 0, p2: 0}
       var ballPosition = {x:0, y:0};
-		
-			
+	  		
 			const chatSocket = new WebSocket(
-				`${wsScheme}://${publicIp}/ws/game/offline/oneversone/${roomName}/`
+				`${wsScheme}://${publicIp}/ws/game/on/2p/${roomName}/`
 			);
-			
-			chatSocket.onclose = function(event) {
-        if (event.code === 4000) {
-            alert("This game is already full. Please join another game.");
-            // 사용자가 확인을 누른 후 현재 페이지를 닫음
-            window.close();
-        } else {
-            console.error('WebSocket connection closed unexpectedly.');
-        }
-    };
 
 
 			document.addEventListener('keydown', function(event) {
             const keyName = event.key;
             // console.log('keydown event\n\n' + 'key: ' + keyName );
+			// keyName to string
 
             if (chatSocket.readyState === WebSocket.OPEN) {
                 chatSocket.send(JSON.stringify({
@@ -135,7 +124,7 @@
 
 			// 웹 소켓 강제 종료시 에러 처리 - 에러 로그 출력
 			chatSocket.onclose = function(event) {
-				console.error('chat socket closed unexpectedly');
+				console.error('game socket closed unexpectedly');
 			};
 
 

@@ -1,0 +1,92 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Game Room</title>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <style>
+        #gameOverMessage {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            padding: 20px;
+            border: 1px solid #000;
+            z-index: 1000;
+        }
+        .winner1 { color: green; }
+        .winner2 { color: red; }
+        #scoreBoard { text-align: center; margin-bottom: 20px; }
+        #gameContainer { width: 800px; height: 600px; margin: auto; }
+    </style>
+</head>
+<body>
+
+<div id="gameOverMessage">GAME OVER!!!</div>
+<div id="scoreBoard">
+    Player 1: <span id="scorePlayer1">0</span> | 
+    Player 2: <span id="scorePlayer2">0</span>
+</div>
+<div id="gameContainer"></div>
+
+<script type="module" src="{% static 'js/offtourremoteGame.js' %}" defer></script>
+<script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+	const publicIp = "43.200.228.128";
+    const chatSocket = new WebSocket(`${wsScheme}://${publicIp}/ws/game/off/tour/${roomName}/`);
+
+    chatSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.game_over_flag) {
+            const gameOverMessage = document.getElementById('gameOverMessage');
+            gameOverMessage.style.display = 'block';
+            gameOverMessage.className = data.game_winner === 1 ? 'winner1' : 'winner2';
+            gameOverMessage.innerHTML = `Player ${data.game_winner} Wins!`;
+            setTimeout(() => window.location.href = '/game', 3000);
+        } else {
+            // Update bar and ball positions
+            if (data.play_bar1_position) updateBarPosition('bar1', data.play_bar1_position);
+            if (data.play_bar2_position) updateBarPosition('bar2', data.play_bar2_position);
+            if (data.ball_position) updateBallPosition(data.ball_position);
+            updateScores(data.score_player1, data.score_player2);
+        }
+    };
+
+    function updateBarPosition(barId, position) {
+        // Logic to update bar position
+    }
+
+    function updateBallPosition(position) {
+        // Logic to update ball position
+    }
+
+    function updateScores(scorePlayer1, scorePlayer2) {
+        document.getElementById('scorePlayer1').innerText = scorePlayer1;
+        document.getElementById('scorePlayer2').innerText = scorePlayer2;
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (chatSocket.readyState === WebSocket.OPEN) {
+            chatSocket.send(JSON.stringify({ 'message': event.key }));
+        }
+    });
+
+    chatSocket.onclose = function() {
+        console.error('Chat socket closed unexpectedly');
+    };
+</script>
+
+</body>
+</html>

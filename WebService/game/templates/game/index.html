@@ -6,13 +6,13 @@
 	</head>
 	<body>
 		<div>
-			<label><input type="radio" name="online_status" value="online" checked> Online</label>
-			<label><input type="radio" name="online_status" value="offline"> Offline</label>
+			<label><input type="radio" name="online_status" value="on" checked> Online</label>
+			<label><input type="radio" name="online_status" value="off"> Offline</label>
 		</div>
 		<div>
-			<label><input type="radio" name="game_mode" value="oneversone" checked> 1 vs 1</label>
-			<label><input type="radio" name="game_mode" value="multiplay"> Multiplayer</label>
-			<label><input type="radio" name="game_mode" value="tournament"> Tournament</label>
+			<label><input type="radio" name="game_mode" value="2p" checked> 1 vs 1</label>
+			<label><input type="radio" name="game_mode" value="4p"> Multiplayer</label>
+			<label><input type="radio" name="game_mode" value="tour"> Tournament</label>
 		</div>
 		What game room would you like to enter?<br>
 		<input id="room-name-input" type="text" size="100"><br>
@@ -30,8 +30,8 @@
             var onlineStatus = document.querySelector('input[name="online_status"]:checked').value;
             var gameMode = document.querySelector('input[name="game_mode"]:checked').value;
             // Update the page content or WebSocket connection based on the selections.
+			// 현재 페이지의 URL 경로를 아래로 변경
             window.location.pathname = `/game/${onlineStatus}/${gameMode}/${roomName}/`;
-			// window.location.pathname = `/game/online/oneversone/${roomName}/`;
         };
 		</script>
 	</body>
