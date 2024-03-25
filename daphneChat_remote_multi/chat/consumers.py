@@ -13,10 +13,14 @@ class GameManager:
             self.games[room_name] = {
                 'play_bar1_position': {'x': 0, 'y': 9},
                 'play_bar2_position': {'x': 0, 'y': -9},
+                'play_bar3_position': {'x': 9, 'y': 0},
+                'play_bar4_position': {'x': -9, 'y': 0},
                 'ball_position': {'x': 0, 'y': 0},
                 'ball_velocity': {'x': 0.09, 'y': 0.06},
                 'score_player1': 0,
                 'score_player2': 0,
+                'score_player3': 0,
+                'score_player4': 0,
                 'game_over_flag': False,
                 'game_winner': 0,
                 'updating_ball_position': False,
@@ -30,7 +34,6 @@ class GameManager:
 
 
 game_manager = GameManager()
-
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
@@ -53,13 +56,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         self.player_number = self.game_state['connected_clients_count']
 
-        if self.game_state['connected_clients_count'] == 2:
+        if self.game_state['connected_clients_count'] == 4:
             await asyncio.sleep(3)  # 클라이언트가 2개 연결된 후 3초 기다립니다.
             if not self.game_state['updating_ball_position']:
                 self.game_state['updating_ball_position'] = True
                 asyncio.create_task(self.ball_position_updater())
         
-        if self.game_state['connected_clients_count'] >= 3:
+        if self.game_state['connected_clients_count'] >= 5:
             await self.send(text_data=json.dumps({
             "type": "error",
             "message": "Game is full. You cannot join this game."
@@ -86,13 +89,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.game_state['play_bar1_position']['x'] = min(
                     9, self.game_state['play_bar1_position']['x'] + 0.4)
 
-        elif self.player_number == 2:
+        if self.player_number == 2:
             if message == 'a':
                 self.game_state['play_bar2_position']['x'] = max(
                     -9, self.game_state['play_bar2_position']['x'] - 0.4)
             elif message == 'd':
                 self.game_state['play_bar2_position']['x'] = min(
                     9, self.game_state['play_bar2_position']['x'] + 0.4)
+
+        if self.player_number == 3:
+            if message == 'a':
+                self.game_state['play_bar4_position']['y'] = max(
+                    -9, self.game_state['play_bar4_position']['y'] - 0.4)
+            elif message == 'd':
+                self.game_state['play_bar4_position']['y'] = min(
+                    9, self.game_state['play_bar4_position']['y'] + 0.4)
+
+        if self.player_number == 4:
+            if message == 'a':
+                self.game_state['play_bar3_position']['y'] = max(
+                    -9, self.game_state['play_bar3_position']['y'] - 0.4)
+            elif message == 'd':
+                self.game_state['play_bar3_position']['y'] = min(
+                    9, self.game_state['play_bar3_position']['y'] + 0.4)
 
         # pass
         # self._update_ball_position()
@@ -116,6 +135,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 and self.game_state['play_bar2_position']['x'] - bar_width / 2 < self.game_state['ball_position']['x'] < self.game_state['play_bar2_position']['x'] + bar_width / 2:
             self.game_state['ball_velocity']['y'] *= -1  # y 방향 반전
 
+        if self.game_state['play_bar3_position']['x'] - ball_radius < self.game_state['ball_position']['x'] < self.game_state['play_bar3_position']['x'] + ball_radius \
+                and self.game_state['play_bar3_position']['y'] - bar_width / 2 < self.game_state['ball_position']['y'] < self.game_state['play_bar3_position']['y'] + bar_width / 2:
+            self.game_state['ball_velocity']['x'] *= -1  # y 방향 반전
+
+        if self.game_state['play_bar4_position']['x'] - ball_radius < self.game_state['ball_position']['x'] < self.game_state['play_bar4_position']['x'] + ball_radius \
+                and self.game_state['play_bar4_position']['y'] - bar_width / 2 < self.game_state['ball_position']['y'] < self.game_state['play_bar4_position']['y'] + bar_width / 2:
+            self.game_state['ball_velocity']['x'] *= -1  # y 방향 반전
+
+        
         # 벽과의 충돌 처리
         if self.game_state['ball_position']['y'] <= -10 or self.game_state['ball_position']['y'] >= 10:
             if self.game_state['ball_position']['y'] > 10:
@@ -123,17 +151,49 @@ class ChatConsumer(AsyncWebsocketConsumer):
             elif self.game_state['ball_position']['y'] < -10:
                 self.game_state['score_player1'] += 1
             self.game_state['ball_position'] = {'x': 0, 'y': 0}
+            self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
+            self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
+            self.game_state['play_bar3_position'] = {'x': 9, 'y': 0}
+            self.game_state['play_bar4_position'] = {'x': -9, 'y': 0}
             await asyncio.sleep(3) 
+        
+        if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
+            if self.game_state['ball_position']['x'] > 10:
+                self.game_state['score_player3'] += 1
+            elif self.game_state['ball_position']['x'] < -10:
+                self.game_state['score_player4'] += 1
+            self.game_state['ball_position'] = {'x': 0, 'y': 0}
+            self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
+            self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
+            self.game_state['play_bar3_position'] = {'x': 9, 'y': 0}
+            self.game_state['play_bar4_position'] = {'x': -9, 'y': 0}
+            await asyncio.sleep(2)
 
         # 왼쪽 또는 오른쪽 벽과의 충돌
-        if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
-            self.game_state['ball_velocity']['x'] *= -1  # x 방향 반전
+        # if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
+        #     self.game_state['ball_velocity']['x'] *= -1  # x 방향 반전
 
         # 게임 종료 조건 확인
-        if self.game_state['score_player1'] >= self.game_state.get('game_over_score', 5) or self.game_state['score_player2'] >= self.game_state.get('game_over_score', 5):
+        # if self.game_state['score_player1'] >= self.game_state.get('game_over_score', 5) or self.game_state['score_player2'] >= self.game_state.get('game_over_score', 5):
+        #     self.game_state['game_over_flag'] = True
+        #     self.game_state['game_winner'] = 1 if self.game_state['score_player1'] >= self.game_state.get(
+        #         'game_over_score', 5) else 2
+        
+        if self.game_state['score_player1'] == 3:
             self.game_state['game_over_flag'] = True
-            self.game_state['game_winner'] = 1 if self.game_state['score_player1'] >= self.game_state.get(
-                'game_over_score', 5) else 2
+            self.game_state['game_winner'] = 1
+
+        if self.game_state['score_player2'] == 3:
+            self.game_state['game_over_flag'] = True
+            self.game_state['game_winner'] = 2
+
+        if self.game_state['score_player3'] == 3:
+            self.game_state['game_over_flag'] = True
+            self.game_state['game_winner'] = 3
+
+        if self.game_state['score_player4'] == 3:
+            self.game_state['game_over_flag'] = True
+            self.game_state['game_winner'] = 4
 
         # 게임 상태 업데이트를 모든 클라이언트에 전송
         await self.channel_layer.group_send(
@@ -155,10 +215,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['game_winner'] = 0
         self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
         self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
+        self.game_state['play_bar3_position'] = {'x': -9, 'y': 0}
+        self.game_state['play_bar4_position'] = {'x': 9, 'y': 0}
         self.game_state['ball_position'] = {'x': 0, 'y': 0}
         self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
+        self.game_state['score_player3'] = 0
+        self.game_state['score_player4'] = 0
 
         game_manager.end_game(self.room_name)
 
@@ -167,9 +231,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'play_bar1_position': self.game_state['play_bar1_position'],
             'play_bar2_position': self.game_state['play_bar2_position'],
+            'play_bar3_position': self.game_state['play_bar3_position'],
+            'play_bar4_position': self.game_state['play_bar4_position'],
             'ball_position': self.game_state['ball_position'],
             'score_player1': self.game_state['score_player1'],
             'score_player2': self.game_state['score_player2'],
+            'score_player3': self.game_state['score_player3'],
+            'score_player4': self.game_state['score_player4'],
             'game_over_flag': self.game_state['game_over_flag'],
             'game_winner': self.game_state['game_winner']
         }))
