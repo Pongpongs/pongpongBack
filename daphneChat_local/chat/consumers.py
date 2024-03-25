@@ -2,11 +2,13 @@ import json
 import uuid
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
+from asyncio import Lock
 
 
 class GameManager:
     def __init__(self):
         self.games = {}
+        self.lock = Lock()
         self.room_sessions = {}
 
     def create_new_game_session(self, room_name):
@@ -26,6 +28,16 @@ class GameManager:
         }
         return session_id
 
+    async def increment_connected_clients(self, session_id):
+        async with self.lock:
+            self.games[session_id]['connected_clients_count'] += 1
+
+    async def decrement_connected_clients(self, session_id):
+        async with self.lock:
+            self.games[session_id]['connected_clients_count'] -= 1
+            if self.games[session_id]['connected_clients_count'] == 0:
+                self.end_game_session(session_id)
+
     def get_game_state(self, session_id):
         return self.games.get(session_id)
 
@@ -41,17 +53,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-
         self.session_id = game_manager.create_new_game_session(self.room_name)
         self.game_state = game_manager.get_game_state(self.session_id)
 
-        await (self.channel_layer.group_add(
-            self.session_id,  # 세션 ID를 사용하여 그룹 추가
-            self.channel_name
-        ))
-
+        await self.channel_layer.group_add(self.session_id, self.channel_name)
         await self.accept()
-        self.game_state['connected_clients_count'] += 1
+        await game_manager.increment_connected_clients(self.session_id)
 
         if self.game_state['connected_clients_count'] == 1:
             await asyncio.sleep(3)  # 클라이언트가 2개 연결된 후 3초 기다립니다.
@@ -60,24 +67,31 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 asyncio.create_task(self.ball_position_updater())
 
     async def disconnect(self, close_code):
-        self.game_state['connected_clients_count'] -= 1
-        if self.game_state['connected_clients_count'] == 0:
-            game_manager.end_game_session(self.session_id)
+        await self.channel_layer.group_discard(self.session_id, self.channel_name)
+
+        # self.game_state['connected_clients_count'] -= 1
+        # if self.game_state['connected_clients_count'] == 0:
+        #     game_manager.end_game_session(self.session_id)
         await self.channel_layer.group_discard(self.session_id, self.channel_name)
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        keyStates = text_data_json  # 이제 keyStates는 {"a": true/false, "d": true/false, "j": true/false, "l": true/false} 형태입니다.
+        # 이제 keyStates는 {"a": true/false, "d": true/false, "j": true/false, "l": true/false} 형태입니다.
+        keyStates = text_data_json
 
         # 각 키에 대한 상태 확인 및 처리
         if keyStates.get('a'):
-            self.game_state['play_bar1_position']['x'] = max(-9, self.game_state['play_bar1_position']['x'] - 0.4)
+            self.game_state['play_bar1_position']['x'] = max(
+                -9, self.game_state['play_bar1_position']['x'] - 0.4)
         if keyStates.get('d'):
-            self.game_state['play_bar1_position']['x'] = min(9, self.game_state['play_bar1_position']['x'] + 0.4)
+            self.game_state['play_bar1_position']['x'] = min(
+                9, self.game_state['play_bar1_position']['x'] + 0.4)
         if keyStates.get('j'):
-            self.game_state['play_bar2_position']['x'] = max(-9, self.game_state['play_bar2_position']['x'] - 0.4)
+            self.game_state['play_bar2_position']['x'] = max(
+                -9, self.game_state['play_bar2_position']['x'] - 0.4)
         if keyStates.get('l'):
-            self.game_state['play_bar2_position']['x'] = min(9, self.game_state['play_bar2_position']['x'] + 0.4)
+            self.game_state['play_bar2_position']['x'] = min(
+                9, self.game_state['play_bar2_position']['x'] + 0.4)
 
         # if message == 'a':
         #     self.game_state['play_bar1_position']['x'] = max(
@@ -160,7 +174,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
 
-        game_manager.end_game(self.room_name)
+        game_manager.end_game_session(self.session_id)
 
     async def game_update(self, event):
         await self.send(text_data=json.dumps({
