@@ -1,0 +1,5 @@
+2024-03-25 18:03:55,042 INFO     Starting server at ssl:8000:privateKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.key:certKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.crt
+2024-03-25 18:03:55,042 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2024-03-25 18:03:55,042 INFO     Configuring endpoint ssl:8000:privateKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.key:certKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.crt
+2024-03-25 18:03:55,049 INFO     Listening on TCP address 0.0.0.0:8000
+2024-03-25 18:04:05,465 INFO     Killed 0 pending application instances
