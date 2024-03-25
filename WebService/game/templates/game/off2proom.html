@@ -6,7 +6,7 @@
 	<head>
 		
 		<meta charset="utf-8"/>
-		<title>Game Room</title>
+		<title>Chat Room</title>
 		<script type="importmap">
 			{
 					"imports": {
@@ -53,6 +53,11 @@
 			const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
 			const publicIp = "43.200.228.128";
 
+			const chatSocket = new WebSocket(
+				`${wsScheme}://${publicIp}/ws/game/off/2p/${roomName}/`
+			);
+			
+
 			var barPositions = {
             bar1: {x: 0, y:0},
             bar2: {x: 0, y:0}
@@ -60,12 +65,29 @@
         
       var scoreBoard = {p1 : 0, p2: 0}
       var ballPosition = {x:0, y:0};
-		
+			let keyStates = {'a': false, 'd': false, 'j': false, 'l':false};
 			
-			const chatSocket = new WebSocket(
-				`${wsScheme}://${publicIp}/ws/game/off/2p/${roomName}/`
-			);
+			document.addEventListener('keydown', function(event) {
+
+				if (['a', 'd', 'j', 'l'].includes(event.key)) {
+          keyStates[event.key] = true;
+          sendKeyStates();
+        }
+      });
 			
+			document.addEventListener('keyup', function(event) {
+				if (['a', 'd', 'j', 'l'].includes(event.key)) {
+          keyStates[event.key] = false;
+          sendKeyStates();
+        }
+      });
+
+			function sendKeyStates() {
+        if (chatSocket.readyState === WebSocket.OPEN) {
+          chatSocket.send(JSON.stringify(keyStates));
+        }
+      }
+
 			chatSocket.onclose = function(event) {
         if (event.code === 4000) {
             alert("This game is already full. Please join another game.");
@@ -74,20 +96,8 @@
         } else {
             console.error('WebSocket connection closed unexpectedly.');
         }
-    };
-
-
-			document.addEventListener('keydown', function(event) {
-            const keyName = event.key;
-            // console.log('keydown event\n\n' + 'key: ' + keyName );
-
-            if (chatSocket.readyState === WebSocket.OPEN) {
-                chatSocket.send(JSON.stringify({
-                    'message': keyName
-                }));
-            }
-      });
-
+    	};
+			
 			// 채팅창 - 채팅 내역 출력
 			chatSocket.onmessage = function(event)	{
 				const data = JSON.parse(event.data);
@@ -135,7 +145,7 @@
 
 			// 웹 소켓 강제 종료시 에러 처리 - 에러 로그 출력
 			chatSocket.onclose = function(event) {
-				console.error('game socket closed unexpectedly');
+				console.error('chat socket closed unexpectedly');
 			};
 
 

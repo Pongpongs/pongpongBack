@@ -2,7 +2,7 @@
 
 cd /home/ubuntu/pongpongBack/WebService
 
-source /home/ubuntu/pongpongBack/myprojectvenv/bin/activate
+source /home/ubuntu/pongpongBack/myprojectenv/bin/activate
 source /home/ubuntu/.env
 
 echo "Stopping any existing Daphne servers..."

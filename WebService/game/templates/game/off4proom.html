@@ -57,32 +57,40 @@
 			const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
 			const publicIp = "43.200.228.128";
 			
+			const chatSocket = new WebSocket(
+				`${wsScheme}://${publicIp}/ws/game/off/4p/${roomName}/`
+			);
+
 			var barPositions = {
             bar1: {x: 0, y:0},
             bar2: {x: 0, y:0},
 						bar3: {x: 0, y:0},
 						bar4: {x: 0, y:0}
-      };
+    		};
         
-      var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
-      var ballPosition = {x:0, y:0};
-		
+      		var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
+      		var ballPosition = {x:0, y:0};
+			let keyStates = {'q': false, 'e': false, 'i': false, 'p':false, 'z': false, 'c': false, 'n': false, 'm':false};
 			
-			const chatSocket = new WebSocket(
-				`${wsScheme}://${publicIp}/ws/game/off/4p/${roomName}/`
-			);
-
-
 			document.addEventListener('keydown', function(event) {
-            const keyName = event.key;
-            // console.log('keydown event\n\n' + 'key: ' + keyName );
-
-            if (chatSocket.readyState === WebSocket.OPEN) {
-                chatSocket.send(JSON.stringify({
-                    'message': keyName
-                }));
-            }
+				if (['q', 'e', 'i', 'p', 'z', 'c', 'b', 'm'].includes(event.key)) {
+          keyStates[event.key] = true;
+          sendKeyStates();
+        }
       });
+
+			document.addEventListener('keyup', function(event) {
+				if (['q', 'e', 'i', 'p', 'z', 'c', 'b', 'm'].includes(event.key)) {
+          keyStates[event.key] = false;
+          sendKeyStates();
+        }
+      });
+			
+			function sendKeyStates() {
+        if (chatSocket.readyState === WebSocket.OPEN) {
+          chatSocket.send(JSON.stringify(keyStates));
+        }
+      }
 
 			// 채팅창 - 채팅 내역 출력
 			chatSocket.onmessage = function(event)	{
@@ -180,4 +188,3 @@
 		<div id="gameContainer" style="width: 800px; height: 100px; margin: auto;"></div>
 	</body>
 </html>
-

@@ -12,6 +12,13 @@ def realback(request):
 	if request.method != 'POST':
 		return HttpResponseNotAllowed(['POST'])
 	data = json.loads(request.body)
+	# 아래의 이메일 대조 방식을 다음과 같이 변경한다.
+	# data.get으로 authorization_code 를 꺼내서 token을 발급한다.
+	# token을 발급하고 token을 사용해 42api로 부터 email을 발급힌디.
+	# email, 암호화한 토큰(추가 검증용)을 프론트로 보낸다.
+	# 프론트에서 email을 사용해 2FA 인증을 한다.
+	# 2FA인증이 끝나면 암호화한 토큰과 이메일을 프론트로 보낸다.
+	# 복호화한 토큰을 사용해 42API로부터 이메일을 발급받아 이메일이 동일할 경우 db에 등록한다.
 	useremail = data.get('userEmail')
 	access_token = data.get('access_token')
 	if not data:

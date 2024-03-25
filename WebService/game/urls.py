@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+# SPA 프론트로 하단의 urlpatterns는 다 지울 예정
 urlpatterns = [
 	path('', views.index, name='index'),
 	# path('<str:online_status>/<str:game_mode>/<str:room_name>/', views.room, name='room'),
