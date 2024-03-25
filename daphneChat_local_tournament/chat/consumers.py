@@ -18,7 +18,7 @@ class GameManager:
             'play_bar1_position': {'x': 0, 'y': 9},
             'play_bar2_position': {'x': 0, 'y': -9},
             'ball_position': {'x': 0, 'y': 0},
-            'ball_velocity': {'x': 0.03, 'y': 0.02},
+            'ball_velocity': {'x': 0.08, 'y': 0.05},
             'score_player1': 0,
             'score_player2': 0,
             'game_over_flag': False,
@@ -93,29 +93,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
         bar_width = 2  # 예시 값, 실제 바의 가로 길이에 맞게 조정
         ball_radius = 0.5  # 예시 값, 실제 공의 반지름에 맞게 조정
 
-        # 첫 번째 플레이어 바와 공의 충돌 검사
         if self.game_state['play_bar1_position']['y'] - ball_radius < self.game_state['ball_position']['y'] < self.game_state['play_bar1_position']['y'] + ball_radius \
                 and self.game_state['play_bar1_position']['x'] - bar_width / 2 < self.game_state['ball_position']['x'] < self.game_state['play_bar1_position']['x'] + bar_width / 2:
             self.game_state['ball_velocity']['y'] *= -1  # y 방향 반전
 
-        # 두 번째 플레이어 바와 공의 충돌 검사
         if self.game_state['play_bar2_position']['y'] - ball_radius < self.game_state['ball_position']['y'] < self.game_state['play_bar2_position']['y'] + ball_radius \
                 and self.game_state['play_bar2_position']['x'] - bar_width / 2 < self.game_state['ball_position']['x'] < self.game_state['play_bar2_position']['x'] + bar_width / 2:
             self.game_state['ball_velocity']['y'] *= -1  # y 방향 반전
 
-        # 벽과의 충돌 처리
         if self.game_state['ball_position']['y'] <= -10 or self.game_state['ball_position']['y'] >= 10:
             if self.game_state['ball_position']['y'] > 10:
                 self.game_state['score_player2'] += 1
             elif self.game_state['ball_position']['y'] < -10:
                 self.game_state['score_player1'] += 1
             self.game_state['ball_position'] = {'x': 0, 'y': 0}
+            await asyncio.sleep(2)
 
-        # 왼쪽 또는 오른쪽 벽과의 충돌
         if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
             self.game_state['ball_velocity']['x'] *= -1  # x 방향 반전
 
-        # 게임 종료 조건 확인
         if self.game_state['score_player1'] >= self.game_state.get('game_over_score', 3) or self.game_state['score_player2'] >= self.game_state.get('game_over_score', 3):
             self.game_state['game_over_flag'] = True
             self.game_state['game_winner'] = 1 if self.game_state['score_player1'] >= self.game_state.get(
@@ -166,9 +162,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['ball_velocity'] = {'x': 0.03, 'y': 0.02}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0       
-        self.game_state['tournament_over_flag'] = True    
-
-        # game_manager.end_game(self.room_name)
+        self.game_state['tournament_over_flag'] = True 
+        game_manager.end_game_session(self.session_id)
+  
 
     async def game_update(self, event):
         await self.send(text_data=json.dumps({

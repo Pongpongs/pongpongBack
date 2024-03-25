@@ -113,6 +113,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             elif self.game_state['ball_position']['y'] < -10:
                 self.game_state['score_player1'] += 1
             self.game_state['ball_position'] = {'x': 0, 'y': 0}
+            await asyncio.sleep(2)
 
         # 왼쪽 또는 오른쪽 벽과의 충돌
         if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:

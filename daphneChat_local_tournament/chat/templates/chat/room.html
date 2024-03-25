@@ -112,6 +112,9 @@
                 gameOverMessage.innerHTML = "Player 2 Wins!"; // Player 2 승리 메시지
                 gameOverMessage.className = "winner2"; // 빨간색 스타일 적용
             }
+						setTimeout(function() {
+							gameOverMessage.style.display = 'none';
+						}, 3000);
 					}
 				}
 				if (data.tournament_over_flag !== undefined) {
