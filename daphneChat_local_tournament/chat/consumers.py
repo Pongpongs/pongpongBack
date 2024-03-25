@@ -2,11 +2,13 @@ import json
 import uuid
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
+from asyncio import Lock
 
 
 class GameManager:
     def __init__(self):
         self.games = {}
+        self.lock = Lock()
         self.room_sessions = {}
 
     def create_new_game_session(self, room_name):
@@ -27,6 +29,16 @@ class GameManager:
         }
         return session_id
 
+    async def increment_connected_clients(self, session_id):
+        async with self.lock:
+            self.games[session_id]['connected_clients_count'] += 1
+
+    async def decrement_connected_clients(self, session_id):
+        async with self.lock:
+            self.games[session_id]['connected_clients_count'] -= 1
+            if self.games[session_id]['connected_clients_count'] == 0:
+                self.end_game_session(session_id)
+    
     def get_game_state(self, session_id):
         return self.games.get(session_id)
 
@@ -37,22 +49,16 @@ class GameManager:
 
 game_manager = GameManager()
 
-
 class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-
         self.session_id = game_manager.create_new_game_session(self.room_name)
         self.game_state = game_manager.get_game_state(self.session_id)
 
-        await (self.channel_layer.group_add(
-            self.session_id,  # 세션 ID를 사용하여 그룹 추가
-            self.channel_name
-        ))
-
+        await self.channel_layer.group_add(self.session_id, self.channel_name)
         await self.accept()
-        self.game_state['connected_clients_count'] += 1
+        await game_manager.increment_connected_clients(self.session_id)
 
         if self.game_state['connected_clients_count'] == 1:
             await asyncio.sleep(3)  # 클라이언트가 2개 연결된 후 3초 기다립니다.
@@ -61,9 +67,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 asyncio.create_task(self.ball_position_updater())
 
     async def disconnect(self, close_code):
-        self.game_state['connected_clients_count'] -= 1
-        if self.game_state['connected_clients_count'] == 0:
-            game_manager.end_game_session(self.session_id)
+        await game_manager.decrement_connected_clients(self.session_id)
         await self.channel_layer.group_discard(self.session_id, self.channel_name)
 
     async def receive(self, text_data):

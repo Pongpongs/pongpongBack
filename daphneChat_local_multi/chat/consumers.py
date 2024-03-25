@@ -52,7 +52,6 @@ class GameManager:
 
 game_manager = GameManager()
 
-
 class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
@@ -76,10 +75,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        # message = text_data_json["message"]
         keyStates = text_data_json
-        # print(message, " ", self.channel_name)
-
+        
         if keyStates.get('q'):
             self.game_state['play_bar1_position']['x'] = max(
                 -9, self.game_state['play_bar1_position']['x'] - 0.4)

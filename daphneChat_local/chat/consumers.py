@@ -45,9 +45,7 @@ class GameManager:
         if session_id in self.games:
             del self.games[session_id]
 
-
 game_manager = GameManager()
-
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
@@ -67,16 +65,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 asyncio.create_task(self.ball_position_updater())
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.session_id, self.channel_name)
-
-        # self.game_state['connected_clients_count'] -= 1
-        # if self.game_state['connected_clients_count'] == 0:
-        #     game_manager.end_game_session(self.session_id)
+        await game_manager.decrement_connected_clients(self.session_id)
         await self.channel_layer.group_discard(self.session_id, self.channel_name)
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        # 이제 keyStates는 {"a": true/false, "d": true/false, "j": true/false, "l": true/false} 형태입니다.
         keyStates = text_data_json
 
         # 각 키에 대한 상태 확인 및 처리
@@ -93,18 +86,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.game_state['play_bar2_position']['x'] = min(
                 9, self.game_state['play_bar2_position']['x'] + 0.4)
 
-        # if message == 'a':
-        #     self.game_state['play_bar1_position']['x'] = max(
-        #         -9, self.game_state['play_bar1_position']['x'] - 0.4)
-        # if message == 'd':
-        #     self.game_state['play_bar1_position']['x'] = min(
-        #         9, self.game_state['play_bar1_position']['x'] + 0.4)
-        # if message == 'j':
-        #     self.game_state['play_bar2_position']['x'] = max(
-        #         -9, self.game_state['play_bar2_position']['x'] - 0.4)
-        # if message == 'l':
-        #     self.game_state['play_bar2_position']['x'] = min(
-        #         9, self.game_state['play_bar2_position']['x'] + 0.4)
 
     async def _update_ball_position(self):
         # 공 위치 업데이트
