@@ -14,7 +14,7 @@ class GameManager:
                 'play_bar1_position': {'x': 0, 'y': 9},
                 'play_bar2_position': {'x': 0, 'y': -9},
                 'ball_position': {'x': 0, 'y': 0},
-                'ball_velocity': {'x': 0.03, 'y': 0.02},
+                'ball_velocity': {'x': 0.09, 'y': 0.06},
                 'score_player1': 0,
                 'score_player2': 0,
                 'game_over_flag': False,
@@ -58,6 +58,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if not self.game_state['updating_ball_position']:
                 self.game_state['updating_ball_position'] = True
                 asyncio.create_task(self.ball_position_updater())
+        
+        if self.game_state['connected_clients_count'] >= 3:
+            await self.send(text_data=json.dumps({
+            "type": "error",
+            "message": "Game is full. You cannot join this game."
+        }))
+        
+            
 
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
@@ -115,6 +123,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             elif self.game_state['ball_position']['y'] < -10:
                 self.game_state['score_player1'] += 1
             self.game_state['ball_position'] = {'x': 0, 'y': 0}
+            await asyncio.sleep(3) 
 
         # 왼쪽 또는 오른쪽 벽과의 충돌
         if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
@@ -147,7 +156,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
         self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
         self.game_state['ball_position'] = {'x': 0, 'y': 0}
-        self.game_state['ball_velocity'] = {'x': 0.03, 'y': 0.02}
+        self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
 
