@@ -77,9 +77,18 @@
 			chatSocket.onmessage = function(event)	{
 				const data = JSON.parse(event.data);
 				
-				if (data.type === "error") {
-					alert(data.message);	
+				if (data.type === "error") {	//세번째 클라이언트가 접속했을 때
+					alert(data.message);
+					setTimeout(function() {
+                window.location.href = '/chat'; // 3초 후 리다이렉션
+            }, 3000);
 				}
+
+				if (data.type === "game_over") {
+
+					alert(data.message);
+				}
+
 				if (data.game_over_flag !== undefined) {
 					if (data.game_over_flag == true) {
 						var gameOverMessage = document.getElementById('gameOverMessage');

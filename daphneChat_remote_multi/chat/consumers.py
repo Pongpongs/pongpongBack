@@ -16,7 +16,7 @@ class GameManager:
                 'play_bar3_position': {'x': 9, 'y': 0},
                 'play_bar4_position': {'x': -9, 'y': 0},
                 'ball_position': {'x': 0, 'y': 0},
-                'ball_velocity': {'x': 0.09, 'y': 0.06},
+                'ball_velocity': {'x': 0.04, 'y': 0.03},
                 'score_player1': 0,
                 'score_player2': 0,
                 'score_player3': 0,
@@ -218,7 +218,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['play_bar3_position'] = {'x': -9, 'y': 0}
         self.game_state['play_bar4_position'] = {'x': 9, 'y': 0}
         self.game_state['ball_position'] = {'x': 0, 'y': 0}
-        self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
+        self.game_state['ball_velocity'] = {'x': 0.04, 'y': 0.03}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
         self.game_state['score_player3'] = 0

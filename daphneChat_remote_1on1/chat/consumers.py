@@ -36,8 +36,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
 
-        # group을 미리 만들거나 특정 닉네임을 기준으로 만드는방식?
-        # 그룹에 빈공간이 있는지, 특정 닉네님이 있는지 확인
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = "chat_" + self.room_name
 
@@ -58,17 +56,36 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if not self.game_state['updating_ball_position']:
                 self.game_state['updating_ball_position'] = True
                 asyncio.create_task(self.ball_position_updater())
-        
+
         if self.game_state['connected_clients_count'] >= 3:
             await self.send(text_data=json.dumps({
-            "type": "error",
-            "message": "Game is full. You cannot join this game."
-        }))
-        
-            
+                "type": "error",
+                "message": "Game is full. You cannot join this game."
+            }))
+            await asyncio.sleep(1)
+            await self.close()
 
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
+
+        if self.game_state['connected_clients_count'] == 1:
+          # 게임 종료 메시지를 전송합니다.
+            print("!!!!!!!!!!!!!!!!!!!!!!!!")
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "game_over",
+                    "message": "The other player has left. The game is over."
+                }
+            )
+        # 게임 상태를 초기화합니다.
+        self.game_state['updating_ball_position'] = False
+        self.game_state['game_over_flag'] = True
+        self.game_state['game_winner'] = None  # 승자가 없는 상태로 설정
+
+        # 필요한 경우 게임 관리 객체에서 현재 게임 세션을 제거합니다.
+        game_manager.end_game(self.room_name)
+
         if self.game_state['connected_clients_count'] == 0:
             game_manager.end_game(self.room_name)
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
@@ -93,9 +110,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             elif message == 'd':
                 self.game_state['play_bar2_position']['x'] = min(
                     9, self.game_state['play_bar2_position']['x'] + 0.4)
-
-        # pass
-        # self._update_ball_position()
 
     async def _update_ball_position(self):
         # 공 위치 업데이트
@@ -123,7 +137,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             elif self.game_state['ball_position']['y'] < -10:
                 self.game_state['score_player1'] += 1
             self.game_state['ball_position'] = {'x': 0, 'y': 0}
-            await asyncio.sleep(3) 
+            await asyncio.sleep(3)
 
         # 왼쪽 또는 오른쪽 벽과의 충돌
         if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
