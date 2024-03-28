@@ -141,4 +141,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['ec2-43-200-228-128.ap-northeast-2.compute.amazonaws.com', '43.200.228.128']
+ALLOWED_HOSTS = ['ec2-43-200-228-128.ap-northeast-2.compute.amazonaws.com', '43.200.228.128', 'pongpongback.duckdns.org']

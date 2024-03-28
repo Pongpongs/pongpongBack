@@ -1,5 +1,70 @@
-2024-03-25 18:03:55,042 INFO     Starting server at ssl:8000:privateKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.key:certKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.crt
-2024-03-25 18:03:55,042 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
-2024-03-25 18:03:55,042 INFO     Configuring endpoint ssl:8000:privateKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.key:certKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.crt
-2024-03-25 18:03:55,049 INFO     Listening on TCP address 0.0.0.0:8000
-2024-03-25 18:04:05,465 INFO     Killed 0 pending application instances
+2024-03-28 15:00:41,540 INFO     Starting server at ssl:8000:privateKey=/etc/letsencrypt/live/pongpongback.duckdns.org/fullchain.pem:certKey=/etc/letsencrypt/live/pongpongback.duckdns.org/privkey.pem
+2024-03-28 15:00:41,541 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2024-03-28 15:00:41,541 INFO     Configuring endpoint ssl:8000:privateKey=/etc/letsencrypt/live/pongpongback.duckdns.org/fullchain.pem:certKey=/etc/letsencrypt/live/pongpongback.duckdns.org/privkey.pem
+2024-03-28 15:00:41,548 INFO     Listening on TCP address 0.0.0.0:8000
+Internal Server Error: /realback/send
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 534, in thread_handler
+    raise exc_info[1]
+  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 479, in __call__
+    ret: _R = await loop.run_in_executor(
+  File "/usr/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 538, in thread_handler
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 26, in realback
+    token, token_status = get_access_token(auth_code)
+  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 85, in get_access_token
+    token_data = response.json()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 900, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.10/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2024-03-28 15:00:47,838 ERROR    Internal Server Error: /realback/send
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 534, in thread_handler
+    raise exc_info[1]
+  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/exception.py", line 42, in inner
+    response = await get_response(request)
+  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/base.py", line 253, in _get_response_async
+    response = await wrapped_callback(
+  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 479, in __call__
+    ret: _R = await loop.run_in_executor(
+  File "/usr/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 538, in thread_handler
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 26, in realback
+    token, token_status = get_access_token(auth_code)
+  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 85, in get_access_token
+    token_data = response.json()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 900, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.10/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2024-03-28 15:00:48,930 INFO     Killed 0 pending application instances
+auth_code : 1ed6994ea04c443d44b1cae0ed8afcbf5c83c3661d74c8217fb9d0486a82a4ff
+start tokenize
+auth : 1ed6994ea04c443d44b1cae0ed8afcbf5c83c3661d74c8217fb9d0486a82a4ff
+3333333
+response : <Response [404]>
+response status : 404
+127.0.0.1:52210 - - [28/Mar/2024:15:00:47] "POST /realback/send" 500 92630
