@@ -15,6 +15,8 @@ class GameManager:
         session_id = str(uuid.uuid4())
         self.room_sessions[room_name] = session_id
         self.games[session_id] = {
+            'player1_id': 0,
+            'player2_id': 0,
             'play_bar1_position': {'x': 0, 'y': 9},
             'play_bar2_position': {'x': 0, 'y': -9},
             'ball_position': {'x': 0, 'y': 0},
@@ -118,16 +120,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
             self.game_state['ball_velocity']['x'] *= -1  # x 방향 반전
 
-        if self.game_state['score_player1'] >= self.game_state.get('game_over_score', 3) or self.game_state['score_player2'] >= self.game_state.get('game_over_score', 3):
+        if self.game_state['score_player1'] >= self.game_state.get('game_over_score', 1) or self.game_state['score_player2'] >= self.game_state.get('game_over_score', 1):
             self.game_state['game_over_flag'] = True
             self.game_state['game_winner'] = 1 if self.game_state['score_player1'] >= self.game_state.get(
-                'game_over_score', 3) else 2
+                'game_over_score', 1) else 2
 
         await self.channel_layer.group_send(
             self.session_id,  # 세션 ID를 기반으로 그룹명 지정
             {
                 'type': 'game_update',
                 # 'game_state': self.game_state
+                'player1_id': self.game_state['player1_id'],
+                'player2_id': self.game_state['player2_id'],
                 'play_bar1_position': self.game_state['play_bar1_position'],
                 'play_bar2_position': self.game_state['play_bar2_position'],
                 'ball_position': self.game_state['ball_position'],
@@ -139,27 +143,59 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
+    async def refresh_game_state(self):
+        self.game_state['updating_ball_position'] = False
+        self.game_state['game_over_flag'] = False
+        self.game_state['game_winner'] = 0
+        self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
+        self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
+        self.game_state['ball_position'] = {'x': 0, 'y': 0}
+        self.game_state['ball_velocity'] = {'x': 0.11, 'y': 0.08}
+        self.game_state['score_player1'] = 0
+        self.game_state['score_player2'] = 0
+        self.game_state['tournament_over_flag'] = False
+
+        await asyncio.sleep(3)
+
     async def ball_position_updater(self):
 
-        i = 0
-        while i < 3:
-            while not self.game_state['game_over_flag']:
-                await self._update_ball_position()
-                await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
+        winner1 = 0  # 첫번째 게임의 승자가 저장
+        winner2 = 0  # 두번째 게임의 승자가 저장됨.
 
-            self.game_state['updating_ball_position'] = False
-            self.game_state['game_over_flag'] = False
-            self.game_state['game_winner'] = 0
-            self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
-            self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
-            self.game_state['ball_position'] = {'x': 0, 'y': 0}
-            self.game_state['ball_velocity'] = {'x': 0.11, 'y': 0.08}
-            self.game_state['score_player1'] = 0
-            self.game_state['score_player2'] = 0
-            self.game_state['tournament_over_flag'] = False
-            await asyncio.sleep(3)
-            i += 1
-            
+        self.game_state['player1_id'] = 1
+        self.game_state['player2_id'] = 2
+        while not self.game_state['game_over_flag']:
+            await self._update_ball_position()
+            await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
+        winner1 = self.game_state['game_winner']
+        await self.refresh_game_state()
+        # 첫번째 경기 승자 저장
+        
+        print("aaaa " , winner1  ," ", winner2)
+
+        self.game_state['player1_id'] = 3
+        self.game_state['player2_id'] = 4
+        while not self.game_state['game_over_flag']:
+            await self._update_ball_position()
+            await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
+        if self.game_state['game_winner'] == 1:
+            winner2 = self.game_state['player1_id']
+        elif self.game_state['game_winner'] == 2:
+            winner2 = self.game_state['player2_id']
+        await self.refresh_game_state()
+        # 두번째 경기 승자 저장
+        print("bbbb " , winner1  ," ", winner2)
+
+
+        self.game_state['player1_id'] = winner1
+        self.game_state['player2_id'] = winner2
+        while not self.game_state['game_over_flag']:
+            await self._update_ball_position()
+            await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
+        
+        await self.refresh_game_state()
+
+        
         self.game_state['updating_ball_position'] = False
         self.game_state['game_over_flag'] = False
         self.game_state['game_winner'] = 0
@@ -171,12 +207,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['score_player2'] = 0
         self.game_state['tournament_over_flag'] = True
         print("!!!!!!!!!!!!")
-        
+
         await self.channel_layer.group_send(
             self.session_id,  # 세션 ID를 기반으로 그룹명 지정
             {
                 'type': 'game_update',
                 # 'game_state': self.game_state
+                'player1_id': self.game_state['player1_id'],
+                'player2_id': self.game_state['player2_id'],
                 'play_bar1_position': self.game_state['play_bar1_position'],
                 'play_bar2_position': self.game_state['play_bar2_position'],
                 'ball_position': self.game_state['ball_position'],
@@ -187,12 +225,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'tournament_over_flag': self.game_state['tournament_over_flag']
             }
         )
-        
+
         # self._update_ball_position()
         game_manager.end_game_session(self.session_id)
 
     async def game_update(self, event):
         await self.send(text_data=json.dumps({
+            'player1_id': event['player1_id'],
+            'player2_id': event['player2_id'],
             'play_bar1_position': event['play_bar1_position'],
             'play_bar2_position': event['play_bar2_position'],
             'ball_position': event['ball_position'],
@@ -200,5 +240,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'score_player2': event['score_player2'],
             'game_over_flag': event['game_over_flag'],
             'game_winner': event['game_winner'],
-            'tournament_over_flag': event['tournament_over_flag'] 
+            'tournament_over_flag': event['tournament_over_flag']
         }))
