@@ -2,6 +2,7 @@ import json
 import uuid
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
+import time
 
 
 class GameManager:
@@ -46,6 +47,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+        self.heartbeat_interval = 10  # seconds
+        self.last_heartbeat_time = time.time()
+        self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
+
         self.game_state = game_manager.get_or_create_game(self.room_name)
         self.game_state['connected_clients_count'] += 1  # 클라이언트 수 증가
 
@@ -69,6 +74,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
 
+        self.heartbeat_task.cancel()
+
         if self.game_state['connected_clients_count'] > 0:
           # 게임 종료 메시지를 전송합니다.
             # print("!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -84,16 +91,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # await asyncio.sleep(3)
 
         if self.game_state['connected_clients_count'] == 0:
-            print("???????????????????????????")
+
             game_manager.end_game(self.room_name)
 
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
-        print(message, " ", self.channel_name)
+
+        self.last_heartbeat_time = time.time()
+        # print(message, " ", self.channel_name)
 
         if self.player_number == 1:
             if message == 'a':
@@ -187,6 +195,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'game_over_flag': self.game_state['game_over_flag'],
             'game_winner': self.game_state['game_winner']
         }))
+
+    async def check_heartbeat(self):
+        try:
+            while True:
+                await asyncio.sleep(self.heartbeat_interval)
+                if time.time() - self.last_heartbeat_time > self.heartbeat_interval:
+                    # Heartbeat timeout exceeded, close the connection
+                    print("Heartbeat timeout, closing connection")
+                    await self.close()
+                    break
+        except asyncio.CancelledError:
+            # Expected on disconnect
+            pass
 
     async def game_over_message(self, event):
         # 클라이언트에게 게임 종료 메시지를 전송합니다.
