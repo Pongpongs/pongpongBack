@@ -19,4 +19,4 @@ pip install -r requirements.txt
 4. launch server
 cd WebService
 
-daphne -e ssl:8000:privateKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.key:certKey=/home/ubuntu/pongpongBack/myprojectenv/lib/python3.10/site-packages/sslserver/certs/development.crt WebService.asgi:application
+bash execute_server.sh
