@@ -74,6 +74,13 @@
 			);
 
 
+			setInterval(() => {
+				if (chatSocket.readyState === WebSocket.OPEN) {
+					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+				}
+			}, 10000); // 10초마다 실행
+
+
 			document.addEventListener('keydown', function(event) {
 				if (['q', 'e', 'i', 'p', 'z', 'c', 'b', 'm'].includes(event.key)) {
           keyStates[event.key] = true;

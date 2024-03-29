@@ -85,8 +85,5 @@ class App {
 
 // App 인스턴스 생성
 window.onload = () => {
-
   const app = new App();
-
-
 }

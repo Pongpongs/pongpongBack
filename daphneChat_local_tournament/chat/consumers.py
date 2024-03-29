@@ -217,15 +217,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.refresh_game_state()
 
-        self.game_state['updating_ball_position'] = False
-        self.game_state['game_over_flag'] = False
-        self.game_state['game_winner'] = 0
-        self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
-        self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
-        self.game_state['ball_position'] = {'x': 0, 'y': 0}
-        self.game_state['ball_velocity'] = {'x': 0.11, 'y': 0.08}
-        self.game_state['score_player1'] = 0
-        self.game_state['score_player2'] = 0
+        # self.game_state['updating_ball_position'] = False
+        # self.game_state['game_over_flag'] = False
+        # self.game_state['game_winner'] = 0
+        # self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
+        # self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
+        # self.game_state['ball_position'] = {'x': 0, 'y': 0}
+        # self.game_state['ball_velocity'] = {'x': 0.11, 'y': 0.08}
+        # self.game_state['score_player1'] = 0
+        # self.game_state['score_player2'] = 0
         self.game_state['tournament_over_flag'] = True
         print("!!!!!!!!!!!!")
 

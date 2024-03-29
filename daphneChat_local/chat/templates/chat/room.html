@@ -87,6 +87,12 @@
         }
       }
 
+			setInterval(() => {
+				if (chatSocket.readyState === WebSocket.OPEN) {
+					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+				}
+			}, 10000); // 10초마다 실행
+
 			chatSocket.onclose = function(event) {
         if (event.code === 4000) {
             alert("This game is already full. Please join another game.");

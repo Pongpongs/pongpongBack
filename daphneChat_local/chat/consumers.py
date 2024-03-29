@@ -61,6 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         await game_manager.increment_connected_clients(self.session_id)
 
+        print("!!!!!!!!!!!!!!!!!!!!!")
         self.heartbeat_interval = 10  # seconds
         self.last_heartbeat_time = time.time()
         self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
@@ -84,6 +85,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         self.last_heartbeat_time = time.time()
 
+        print(keyStates)
         # 각 키에 대한 상태 확인 및 처리
         if keyStates.get('a'):
             self.game_state['play_bar1_position']['x'] = max(

@@ -61,12 +61,6 @@
         
       var scoreBoard = {p1 : 0, p2: 0}
       var ballPosition = {x:0, y:0};
-			
-			// setInterval(() => {
-			// 	if (chatSocket.readyState === WebSocket.OPEN) {
-			// 			chatSocket.send(JSON.stringify({ type: "heartbeat" }));
-			// 	}
-			// }, 10000); // 10초마다 실행
 
 			document.addEventListener('keydown', function(event) {
             const keyName = event.key;
@@ -105,17 +99,27 @@
             } else if (data.game_winner == 2) {
                 gameOverMessage.innerHTML = "Player 2 Wins!"; // Player 2 승리 메시지
                 gameOverMessage.className = "winner2"; // 빨간색 스타일 적용
-            }
+            } else if (data.game_winner == 3) {
+                gameOverMessage.innerHTML = "Player 3 Lost!"; // Player 3 승리 메시지
+                gameOverMessage.className = "winner3"; // 파란색 스타일 적용
+            } else if (data.game_winner == 4) {
+                gameOverMessage.innerHTML = "Player 4 Lost!"; // Player 4 승리 메시지
+                gameOverMessage.className = "winner4"; // 노란색 스타일 적용
+            } 
             setTimeout(function() {
-                window.location.href = '/chat'; // 3초 후 리다이렉션
+							gameOverMessage.style.display = 'none';
             }, 3000);		
 					}
+				}
+				if (data.tournament_over_flag === true) {
+					setTimeout(function() {
+                window.location.href = '/chat'; // 3초 후 리다이렉션
+            }, 3000);		
 				}
 
 				if (data.play_bar1_position !== undefined) {
         	barPositions.bar1.x = data.play_bar1_position.x;
-          barPositions.bar1.y = data.play_bar1_position.y;
-                
+          barPositions.bar1.y = data.play_bar1_position.y;       
         }
         if (data.play_bar2_position !== undefined) {
           barPositions.bar2.x = data.play_bar2_position.x;
@@ -162,6 +166,5 @@
 		<div id="gameContainer" style="width: 800px; height: 100px; margin: auto;"></div>
 		<script type="module" src="{% static 'js/remoteGame.js' %}" defer></script>
 
-		
 	</body>
 </html>

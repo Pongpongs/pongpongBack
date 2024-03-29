@@ -34,12 +34,6 @@
 			.winner2 {
 					color: red; /* Player 2 승리시 빨간색 */
 			}
-			.winner3 {
-					color: blue; /* Player 3 승리시 파랑색 */
-			}
-			.winner4 {
-					color: yellow; /* Player 4 승리시 노랑색 */
-			}
 		</style>
 
 		
@@ -53,7 +47,7 @@
 
 		<div id="gameOverMessage" style="display: none;">GAME OVER!!!</div>
 
-
+		
 		<script>
 			const roomName = JSON.parse(document.getElementById('room-name').textContent);
 			const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
@@ -80,6 +74,13 @@
         }
       });
 			
+
+			setInterval(() => {
+				if (chatSocket.readyState === WebSocket.OPEN) {
+					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+				}
+			}, 10000); // 10초마다 실행
+
 			document.addEventListener('keyup', function(event) {
 				if (['a', 'd', 'j', 'l'].includes(event.key)) {
           keyStates[event.key] = false;
