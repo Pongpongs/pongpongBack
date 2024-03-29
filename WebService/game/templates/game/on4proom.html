@@ -34,6 +34,12 @@
 			.winner2 {
 					color: red; /* Player 2 승리시 빨간색 */
 			}
+			.winner3 {
+					color: blue; /* Player 3 승리시 파랑색 */
+			}
+			.winner4 {
+					color: yellow; /* Player 4 승리시 노랑색 */
+			}
 		</style>
 
 		
@@ -54,15 +60,15 @@
 			
 			const chatSocket = new WebSocket(
 				`${wsScheme}://${publicIp}/ws/game/on/4p/${roomName}/`
-			);
-
+			);				
+			
 			var barPositions = {
             bar1: {x: 0, y:0},
             bar2: {x: 0, y:0},
 						bar3: {x: 0, y:0},
 						bar4: {x: 0, y:0}
       };
-        
+
       var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
       var ballPosition = {x:0, y:0};
 
@@ -101,7 +107,7 @@
                 gameOverMessage.className = "winner4"; // 노란색 스타일 적용
             } 
             setTimeout(function() {
-                window.location.href = '/game'; // 3초 후 리다이렉션
+                window.location.href = '/chat'; // 3초 후 리다이렉션
             }, 3000);		
 					}
 				}
@@ -158,6 +164,11 @@
 				messageInputDom.value = '';
 			};			//여기는 나중가선 지우기
 			
+			setInterval(() => {
+			if (chatSocket.readyState === WebSocket.OPEN) {
+				chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+			}
+		}, 1000); // 10초마다 실행
 		</script>
 		<div id="scoreBoard" style="text-align: center; margin-bottom: 20px;">
 				Player 1: <span id="scorePlayer1">0</span> | 

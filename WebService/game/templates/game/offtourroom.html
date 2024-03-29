@@ -1,55 +1,69 @@
 {% load static %}
 
+
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Game Room</title>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
-    <style>
-        #gameOverMessage {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 36px;
-            padding: 20px;
-            border: 1px solid #000;
-            z-index: 1000;
-        }
-        .winner1 { color: green; }
-        .winner2 { color: red; }
-        #scoreBoard { text-align: center; margin-bottom: 20px; }
-        #gameContainer { width: 800px; height: 600px; margin: auto; }
-    </style>
-</head>
-<body>
+	<head>
+		
+		<meta charset="utf-8"/>
+		<title>Chat Room</title>
+		<script type="importmap">
+			{
+					"imports": {
+							"three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+							"three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+					}
+			}
+		</script>
 
-<div id="gameOverMessage">GAME OVER!!!</div>
-<div id="scoreBoard">
-    Player 1: <span id="scorePlayer1">0</span> | 
-    Player 2: <span id="scorePlayer2">0</span>
-</div>
-<div id="gameContainer"></div>
+		<style>
+			#gameOverMessage {
+					display: none;
+					position: fixed;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					font-size: 36px; /* 큰 글씨로 표시 */
+					padding: 20px;
+					border: 1px solid #000;
+					z-index: 1000;
+			}
+			.winner1 {
+					color: green; /* Player 1 승리시 초록색 */
+			}
+			.winner2 {
+					color: red; /* Player 2 승리시 빨간색 */
+			}
+			.winner3 {
+					color: blue; /* Player 3 승리시 파랑색 */
+			}
+			.winner4 {
+					color: yellow; /* Player 4 승리시 노랑색 */
+			}
+		</style>
 
-<script type="module" src="{% static 'js/offtourremoteGame.js' %}" defer></script>
-<script>
-    const roomName = JSON.parse(document.getElementById('room-name').textContent);
-    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
-	const publicIp = "43.200.228.128";
-    const chatSocket = new WebSocket(
-		`${wsScheme}://${publicIp}/ws/game/off/tour/${roomName}/`
-	);
+		
+		<script type="module" src="{% static 'js/offtourremoteGame.js' %}" defer></script>
 
-    var barPositions = {
+	</head>
+
+	<body>
+		
+		{{ room_name|json_script:"room-name" }}
+
+		<div id="gameOverMessage" style="display: none;">GAME OVER!!!</div>
+
+
+		<script>
+			const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    		const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+			const publicIp = "43.200.228.128";
+    		const chatSocket = new WebSocket(
+				`${wsScheme}://${publicIp}/ws/game/off/tour/${roomName}/`
+			);
+			
+
+			var barPositions = {
             bar1: {x: 0, y:0},
             bar2: {x: 0, y:0}
       };
@@ -77,7 +91,12 @@
         if (chatSocket.readyState === WebSocket.OPEN) {
           chatSocket.send(JSON.stringify(keyStates));
         }
-      }
+      	}
+	  	setInterval(() => {
+			if (chatSocket.readyState === WebSocket.OPEN) {
+				chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+			}
+		}, 1000); // 10초마다 실행
 
 			chatSocket.onclose = function(event) {
         if (event.code === 4000) {

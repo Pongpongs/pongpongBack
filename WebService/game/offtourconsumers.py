@@ -229,7 +229,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
         self.game_state['tournament_over_flag'] = True
-        print("!!!!!!!!!!!!")
 
         await self.channel_layer.group_send(
             self.session_id,  # 세션 ID를 기반으로 그룹명 지정

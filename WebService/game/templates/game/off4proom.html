@@ -48,6 +48,7 @@
 	</head>
 
 	<body>
+		
 		{{ room_name|json_script:"room-name" }}
 
 		<div id="gameOverMessage" style="display: none;">GAME OVER!!!</div>
@@ -68,18 +69,12 @@
 						bar4: {x: 0, y:0}
       };
         
-      var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
-      var ballPosition = {x:0, y:0};
+      		var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
+    		var ballPosition = {x:0, y:0};
 			let keyStates = {'q': false, 'e': false, 'i': false, 'p':false, 'z': false, 'c': false, 'n': false, 'm':false};
-		
-			document.addEventListener('keydown', function(event) {
-				if (['q', 'e', 'i', 'p', 'z', 'c', 'b', 'm'].includes(event.key)) {
-          keyStates[event.key] = true;
-          sendKeyStates();
-        }
-      });
 
-	  document.addEventListener('keydown', function(event) {
+
+			document.addEventListener('keydown', function(event) {
 				if (['q', 'e', 'i', 'p', 'z', 'c', 'b', 'm'].includes(event.key)) {
           keyStates[event.key] = true;
           sendKeyStates();
@@ -97,7 +92,12 @@
         if (chatSocket.readyState === WebSocket.OPEN) {
           chatSocket.send(JSON.stringify(keyStates));
         }
-      }
+     	}
+	 	setInterval(() => {
+			if (chatSocket.readyState === WebSocket.OPEN) {
+				chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+			}
+		}, 1000); // 10초마다 실행
 
 			// 채팅창 - 채팅 내역 출력
 			chatSocket.onmessage = function(event)	{

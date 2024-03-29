@@ -24,6 +24,7 @@ def realback(request):
 	user_info = get_user_info(access_token)
 	if user_info is None:
 		return HttpResponse('Unauthorized access token', status=401)
+	# 아래 이메일 대조 로직의 필요성?
 	valid_email = user_info.get('email')
 	if user_email != valid_email:
 		return HttpResponse('Unauthorized email', status=401)
