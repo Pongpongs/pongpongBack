@@ -76,7 +76,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         await game_manager.decrement_connected_clients(self.session_id)
-        
+
         self.heartbeat_task.cancel()
 
         await self.channel_layer.group_discard(self.session_id, self.channel_name)
@@ -85,7 +85,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         # 이제 keyStates는 {"a": true/false, "d": true/false, "j": true/false, "l": true/false} 형태입니다.
         keyStates = text_data_json
-        
+
         self.last_heartbeat_time = time.time()
 
         # 각 키에 대한 상태 확인 및 처리
@@ -167,7 +167,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await asyncio.sleep(3)
 
-    
     async def check_heartbeat(self):
         try:
             while True:
@@ -180,7 +179,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except asyncio.CancelledError:
             # Expected on disconnect
             pass
-
 
     async def ball_position_updater(self):
 
@@ -195,8 +193,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         winner1 = self.game_state['game_winner']
         await self.refresh_game_state()
         # 첫번째 경기 승자 저장
-        
-        print("aaaa " , winner1  ," ", winner2)
+
+        print("aaaa ", winner1, " ", winner2)
 
         self.game_state['player1_id'] = 3
         self.game_state['player2_id'] = 4
@@ -209,15 +207,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             winner2 = self.game_state['player2_id']
         await self.refresh_game_state()
         # 두번째 경기 승자 저장
-        print("bbbb " , winner1  ," ", winner2)
-
+        print("bbbb ", winner1, " ", winner2)
 
         self.game_state['player1_id'] = winner1
         self.game_state['player2_id'] = winner2
         while not self.game_state['game_over_flag']:
             await self._update_ball_position()
             await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
-        
+
         await self.refresh_game_state()
 
         self.game_state['updating_ball_position'] = False
