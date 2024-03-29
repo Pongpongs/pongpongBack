@@ -42,15 +42,19 @@
 	</head>
 
 	<body>
+		
 		{{ room_name|json_script:"room-name" }}
 
 		<div id="gameOverMessage" style="display: none;">GAME OVER!!!</div>
-
 
 		<script>
 			const roomName = JSON.parse(document.getElementById('room-name').textContent);
 			const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
 			const publicIp = "43.200.228.128";
+			
+			const chatSocket = new WebSocket(
+				`${wsScheme}://${publicIp}/ws/game/on/2p/${roomName}/`
+			);
 
 			var barPositions = {
             bar1: {x: 0, y:0},
@@ -59,18 +63,11 @@
         
       var scoreBoard = {p1 : 0, p2: 0}
       var ballPosition = {x:0, y:0};
-	  		
-			const chatSocket = new WebSocket(
-				`${wsScheme}://${publicIp}/ws/game/on/2p/${roomName}/`
-			);
-
 
 			document.addEventListener('keydown', function(event) {
             const keyName = event.key;
-            // console.log('keydown event\n\n' + 'key: ' + keyName );
-			// keyName to string
-
-            if (chatSocket.readyState === WebSocket.OPEN) {
+            
+						if (chatSocket.readyState === WebSocket.OPEN) {
                 chatSocket.send(JSON.stringify({
                     'message': keyName
                 }));
@@ -81,6 +78,19 @@
 			chatSocket.onmessage = function(event)	{
 				const data = JSON.parse(event.data);
 				
+				if (data.type === "error") {	//세번째 클라이언트가 접속했을 때
+					alert(data.message);
+					setTimeout(function() {
+                window.location.href = '/game'; // 3초 후 리다이렉션
+            }, 3000);
+				}
+
+				if (data.type === "game_over") {
+					// console.log("!!!!!!!!!!!");
+					alert(data.message);
+					window.location.href = '/game '; // 사용자가 확인을 누른 직후 리다이렉션
+				}
+
 				if (data.game_over_flag !== undefined) {
 					if (data.game_over_flag == true) {
 						var gameOverMessage = document.getElementById('gameOverMessage');
@@ -95,23 +105,19 @@
             setTimeout(function() {
                 window.location.href = '/game'; // 3초 후 리다이렉션
             }, 3000);		
-						
 					}
 				}
 
 				if (data.play_bar1_position !== undefined) {
-        	//console.log('Position: ' + data.play_bar1_position); // 좌표 로깅
-          barPositions.bar1.x = data.play_bar1_position.x;
+        	barPositions.bar1.x = data.play_bar1_position.x;
           barPositions.bar1.y = data.play_bar1_position.y;
                 
         }
         if (data.play_bar2_position !== undefined) {
-          // console.log('Position: ' + data.play_bar2_position); // 좌표 로깅
           barPositions.bar2.x = data.play_bar2_position.x;
           barPositions.bar2.y = data.play_bar2_position.y;
         }
         if (data.ball_position !== undefined) {
-          // console.log('Ball Position: ', data.ball_position);
           ballPosition.x = data.ball_position.x;
           ballPosition.y = data.ball_position.y;
         }
@@ -124,9 +130,8 @@
 
 			// 웹 소켓 강제 종료시 에러 처리 - 에러 로그 출력
 			chatSocket.onclose = function(event) {
-				console.error('game socket closed unexpectedly');
+				console.error('chat socket closed unexpectedly');
 			};
-
 
 			document.querySelector('#chat-message-input').focus();
 			document.querySelector('#chat-message-input').onkeyup = function(event) {

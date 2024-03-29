@@ -2,6 +2,7 @@ import json
 import uuid
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
+import time
 
 class GameManager:
     def __init__(self):
@@ -13,7 +14,7 @@ class GameManager:
                 'play_bar1_position': {'x': 0, 'y': 9},
                 'play_bar2_position': {'x': 0, 'y': -9},
                 'ball_position': {'x': 0, 'y': 0},
-                'ball_velocity': {'x': 0.03, 'y': 0.02},
+                'ball_velocity': {'x': 0.09, 'y': 0.06},
                 'score_player1': 0,
                 'score_player2': 0,
                 'game_over_flag': False,
@@ -35,8 +36,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
 
-        # group을 미리 만들거나 특정 닉네임을 기준으로 만드는방식?
-        # 그룹에 빈공간이 있는지, 특정 닉네님이 있는지 확인
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = "chat_" + self.room_name
 
@@ -46,6 +45,10 @@ class GameConsumer(AsyncWebsocketConsumer):
         ))
 
         await self.accept()
+
+        self.heartbeat_interval = 10  # seconds
+        self.last_heartbeat_time = time.time()
+        self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
 
         self.game_state = game_manager.get_or_create_game(self.room_name)
         self.game_state['connected_clients_count'] += 1  # 클라이언트 수 증가
@@ -58,17 +61,46 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.game_state['updating_ball_position'] = True
                 asyncio.create_task(self.ball_position_updater())
 
+        if self.game_state['connected_clients_count'] >= 3:
+            await self.send(text_data=json.dumps({
+                "type": "error",
+                "message": "Game is full. You cannot join this game."
+            }))
+            self.game_state['connected_clients_count'] -= 1
+            await asyncio.sleep(3)
+            await self.close()
+
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
-        if self.game_state['connected_clients_count'] == 0:
-            game_manager.end_game(self.room_name)
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
+        self.heartbeat_task.cancel()
+
+        if self.game_state['connected_clients_count'] > 0:
+          # 게임 종료 메시지를 전송합니다.
+            # print("!!!!!!!!!!!!!!!!!!!!!!!!")
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "game_over_message",
+                    "message": "The other player has left. The game is over."
+                    # "game_state": self.game_state
+                })
+            # await asyncio.sleep(3)
+            # await self.close()
+            # await asyncio.sleep(3)
+
+        if self.game_state['connected_clients_count'] == 0:
+
+            game_manager.end_game(self.room_name)
+
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
-        print(message, " ", self.channel_name)
+
+        self.last_heartbeat_time = time.time()
+        # print(message, " ", self.channel_name)
 
         if self.player_number == 1:
             if message == 'a':
@@ -85,9 +117,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             elif message == 'd':
                 self.game_state['play_bar2_position']['x'] = min(
                     9, self.game_state['play_bar2_position']['x'] + 0.4)
-
-        # pass
-        # self._update_ball_position()
 
     async def _update_ball_position(self):
         # 공 위치 업데이트
@@ -115,6 +144,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             elif self.game_state['ball_position']['y'] < -10:
                 self.game_state['score_player1'] += 1
             self.game_state['ball_position'] = {'x': 0, 'y': 0}
+            await asyncio.sleep(3)
 
         # 왼쪽 또는 오른쪽 벽과의 충돌
         if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
@@ -147,7 +177,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
         self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
         self.game_state['ball_position'] = {'x': 0, 'y': 0}
-        self.game_state['ball_velocity'] = {'x': 0.03, 'y': 0.02}
+        self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
 
@@ -163,4 +193,24 @@ class GameConsumer(AsyncWebsocketConsumer):
             'score_player2': self.game_state['score_player2'],
             'game_over_flag': self.game_state['game_over_flag'],
             'game_winner': self.game_state['game_winner']
+        }))
+
+    async def check_heartbeat(self):
+        try:
+            while True:
+                await asyncio.sleep(self.heartbeat_interval)
+                if time.time() - self.last_heartbeat_time > self.heartbeat_interval:
+                    # Heartbeat timeout exceeded, close the connection
+                    print("Heartbeat timeout, closing connection")
+                    await self.close()
+                    break
+        except asyncio.CancelledError:
+            # Expected on disconnect
+            pass
+
+    async def game_over_message(self, event):
+        # 클라이언트에게 게임 종료 메시지를 전송합니다.
+        await self.send(text_data=json.dumps({
+            'type': 'game_over',
+            'message': event['message']
         }))

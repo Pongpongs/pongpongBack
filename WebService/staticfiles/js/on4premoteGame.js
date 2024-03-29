@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
@@ -31,13 +30,23 @@ class App {
     const geometry = new THREE.BoxGeometry(2, 0.2, 0.2);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     this._bar1 = new THREE.Mesh(geometry, material);
-    // 씬에 바를 추가합니다.
     this._scene.add(this._bar1);
 
     const geometry2 = new THREE.BoxGeometry(2, 0.2, 0.2);
     const material2 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     this._bar2 = new THREE.Mesh(geometry2, material2);
     this._scene.add(this._bar2);
+
+    const geometry3 = new THREE.BoxGeometry(0.2, 2, 0.2);
+    const material3 = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+    this._bar3 = new THREE.Mesh(geometry3, material3);
+    this._scene.add(this._bar3);
+
+    const geometry4 = new THREE.BoxGeometry(0.2, 2, 0.2);
+    const material4 = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    this._bar4 = new THREE.Mesh(geometry4, material4);
+    this._scene.add(this._bar4);
+    
   }
 
   _createBall() {
@@ -75,6 +84,8 @@ class App {
     // 바의 x 위치를 업데이트합니다. WebSocket을 통해 받은 barPosition.x 값을 사용합니다.
     this._bar1.position.set(barPositions.bar1.x, barPositions.bar1.y, 0);
     this._bar2.position.set(barPositions.bar2.x, barPositions.bar2.y, 0);
+    this._bar3.position.set(barPositions.bar3.x, barPositions.bar3.y, 0);
+    this._bar4.position.set(barPositions.bar4.x, barPositions.bar4.y, 0);
 
     this._ball.position.x = ballPosition.x * 1;
     this._ball.position.y = ballPosition.y * 1;

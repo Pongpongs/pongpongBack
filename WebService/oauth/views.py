@@ -12,92 +12,63 @@ from datetime import datetime, timedelta
 @csrf_exempt
 def realback(request):
 	# POST 요청만 처리, 예기치 않은 요청 메소드는 거부
-	# if request.method != 'POST':
-	# 	return HttpResponseNotAllowed(['POST']) # 405 상태코드와 함께 어떤 메소드가 허용되는지(['POST']) 클라이언트에게 알려주는 용도
-	data = json.loads(request.body)
-	if data is None:
-		HttpResponse('Unauthorized data error', status=401)
-	auth_code = data.get('auth_code')
-	print(f'auth_code : {auth_code}')
-	token = data.get('access_token')
-	email = data
-	if auth_code:
-		print('start tokenize')
-		token, token_status = get_access_token(auth_code)
-		if token is None:
-			return HttpResponse('Unauthorized token', status=token_status)
-		print(f'userinfo????????????')
-		user_info = get_user_info(token)
-		email = user_info.get('email')
-		encoded_token = encode_data(email)
-		response_data = {
-			'access_token': encoded_token,
-			'email': email
-		}
-		return JsonResponse(response_data)
-	elif token:
-		decoded_token = decode_token(token)
-		if decoded_token is None:
-			return HttpResponse('Invalid access token', status=401)
-		email = data.get('email')
-		valid_email = decode_token.get('email')
-		if useremail != valid_email:
-			return HttpResponse('Unauthorized email', status=401)
-		# 로그인 성공, DB 등록
-		registerUserinDB(valid_email)
-		return HttpResponse('Ok', status=200)
-	else:
-		# token 발급 전 auth_code 없이 요청하는 경우
-		return HttpResponse('Unauthorized auth code', status=401)
+	if request.method != 'POST':
+		return HttpResponseNotAllowed(['POST']) # 405 상태코드와 함께 어떤 메소드가 허용되는지(['POST']) 클라이언트에게 알려주는 용도
+	token_header = request.headers.get('Authorization')
+	if token_header is None:
+		return HttpResponse('Unauthorized data error', status=401)
+	token_scheme, token_value = token_header.split(' ')
+	data = decode_token(token_value)
+	user_email = data.get('user_email')
+	access_token = data.get('access_token')
+	user_info = get_user_info(access_token)
+	if user_info is None:
+		return HttpResponse('Unauthorized access token', status=401)
+	valid_email = user_info.get('email')
+	if user_email != valid_email:
+		return HttpResponse('Unauthorized email', status=401)
+	# 로그인 성공, DB 등록
+	registerUserinDB(valid_email)
+	# db 등록된 이메일 확인
+	print_new_user(valid_email)
+	return HttpResponse('Ok', status=200)
 
-def encode_token(email):
-	secret_key = os.getenv('SECRET_KEY')
-	payload = {
-		'email': email,
-		'exp': datetime.utcnow() + timedelta(seconds=60)
-	}
-	encoded_token = jwt.encode(payload, secret_key, algorithm='HS256')
-	return encoded_token
+# def encode_token(email):
+# 	secret_key = os.getenv('SECRET_KEY')
+# 	payload = {
+# 		'email': email,
+# 		'exp': datetime.utcnow() + timedelta(seconds=60)
+# 	}
+# 	encoded_token = jwt.encode(payload, secret_key, algorithm='HS256')
+# 	return encoded_token
 
 def decode_token(token):
 	secret_key = os.getenv('SECRET_KEY')
-	decoded_token = jwt.decode(token, secret_key, algorithm=['HS256'])
+	decoded_token = jwt.decode(token, secret_key, algorithms=['HS256'])
 	return decoded_token
 
-def get_access_token(code):
-	client_id = os.getenv('CLIENT_ID')
-	client_secret = os.getenv('CLIENT_SECRET')
-	token_request_data = {
-		'grant_type': 'authorization_code',
-		'code': code,
-		'client_id': client_id,
-		'client_secret': client_secret,
-		'redirect_uri': 'https://pongpongback.duckdns.org/realback/send/',
-		'HTTP_REFERER': 'https://localhost:8000'
-	}
-	token_endpoint = 'https://api.intra.42.fr/oauth/token'
-	try:
-		print(f'auth : {code}')
-		response = requests.get(token_endpoint, data=token_request_data)
-		print("3333333")
-		print(f'response : {response}')
-		print(f'response status : {response.status_code}')
-		try:
-			token_data = response.json()
-			token = 
-		except token_data is None:
-			
-		token = token_data.get('access_token')
-		print(f'token json data : {token_data}')	
-		print(f'token : {token}')
-		if response.status_code == 200:
-			#token_data = response.json()
-			return token_data.get('access_token'), None
-		else:
-			http_code = response.status_code
-	except requests.ConnectionError:
-		http_code = response.status_code
-	return None, http_code
+# def get_access_token(code):
+# 	client_id = os.getenv('CLIENT_ID')
+# 	client_secret = os.getenv('CLIENT_SECRET')
+# 	token_request_data = {
+# 		'grant_type': 'authorization_code',
+# 		'code': code,
+# 		'client_id': client_id,
+# 		'client_secret': client_secret,
+# 		'redirect_uri': 'https://pongpongback.duckdns.org/realback/send/',
+# 		'HTTP_REFERER': 'https://localhost:8000'
+# 	}
+# 	token_endpoint = 'https://api.intra.42.fr/oauth/token'
+# 	try:
+# 		response = requests.get(token_endpoint, data=token_request_data)
+# 		if response.status_code == 200:
+# 			token_data = response.json()
+# 			return token_data.get('access_token'), None
+# 		else:
+# 			http_code = response.status_code
+# 	except requests.ConnectionError:
+# 		http_code = 500
+# 	return None, http_code
 
 def get_user_info(access_token):
 	user_info_endpoint = 'https://api.intra.42.fr/v2/me'
@@ -113,19 +84,10 @@ def get_user_info(access_token):
 	user_info = response.json()
 	return user_info
 
-def registerUserinDB(user_info):
-	ids = user_info.get('id')
-	login = user_info.get('login')
-	email = user_info.get('email')
-	userprofile, created = UserProfile.objects.get_or_create(
-		ids=ids,
-		defaults={
-		'ids': ids,
-		'login': login,
-		'email': email,
-	})
+def registerUserinDB(valid_email):
+	userprofile, created = UserProfile.objects.get_or_create(email=valid_email)
 	if not created:
-		print(f'User {login} already exists')
+		print(f'User {valid_email} already exists')
 	return None
 
 def print_new_user(email):

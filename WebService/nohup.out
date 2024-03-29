@@ -1,70 +1,250 @@
-2024-03-28 15:00:41,540 INFO     Starting server at ssl:8000:privateKey=/etc/letsencrypt/live/pongpongback.duckdns.org/fullchain.pem:certKey=/etc/letsencrypt/live/pongpongback.duckdns.org/privkey.pem
-2024-03-28 15:00:41,541 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
-2024-03-28 15:00:41,541 INFO     Configuring endpoint ssl:8000:privateKey=/etc/letsencrypt/live/pongpongback.duckdns.org/fullchain.pem:certKey=/etc/letsencrypt/live/pongpongback.duckdns.org/privkey.pem
-2024-03-28 15:00:41,548 INFO     Listening on TCP address 0.0.0.0:8000
-Internal Server Error: /realback/send
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 534, in thread_handler
-    raise exc_info[1]
-  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/exception.py", line 42, in inner
-    response = await get_response(request)
-  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/base.py", line 253, in _get_response_async
-    response = await wrapped_callback(
-  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 479, in __call__
-    ret: _R = await loop.run_in_executor(
-  File "/usr/lib/python3.10/concurrent/futures/thread.py", line 58, in run
-    result = self.fn(*self.args, **self.kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 538, in thread_handler
-    return func(*args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 26, in realback
-    token, token_status = get_access_token(auth_code)
-  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 85, in get_access_token
-    token_data = response.json()
-  File "/usr/lib/python3/dist-packages/requests/models.py", line 900, in json
-    return complexjson.loads(self.text, **kwargs)
-  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
-    return _default_decoder.decode(s)
-  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "/usr/lib/python3.10/json/decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-2024-03-28 15:00:47,838 ERROR    Internal Server Error: /realback/send
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 534, in thread_handler
-    raise exc_info[1]
-  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/exception.py", line 42, in inner
-    response = await get_response(request)
-  File "/usr/local/lib/python3.10/dist-packages/django/core/handlers/base.py", line 253, in _get_response_async
-    response = await wrapped_callback(
-  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 479, in __call__
-    ret: _R = await loop.run_in_executor(
-  File "/usr/lib/python3.10/concurrent/futures/thread.py", line 58, in run
-    result = self.fn(*self.args, **self.kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/asgiref/sync.py", line 538, in thread_handler
-    return func(*args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 26, in realback
-    token, token_status = get_access_token(auth_code)
-  File "/home/ubuntu/pongpongBack/WebService/./oauth/views.py", line 85, in get_access_token
-    token_data = response.json()
-  File "/usr/lib/python3/dist-packages/requests/models.py", line 900, in json
-    return complexjson.loads(self.text, **kwargs)
-  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
-    return _default_decoder.decode(s)
-  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "/usr/lib/python3.10/json/decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-2024-03-28 15:00:48,930 INFO     Killed 0 pending application instances
-auth_code : 1ed6994ea04c443d44b1cae0ed8afcbf5c83c3661d74c8217fb9d0486a82a4ff
-start tokenize
-auth : 1ed6994ea04c443d44b1cae0ed8afcbf5c83c3661d74c8217fb9d0486a82a4ff
-3333333
-response : <Response [404]>
-response status : 404
-127.0.0.1:52210 - - [28/Mar/2024:15:00:47] "POST /realback/send" 500 92630
+2024-03-29 12:45:35,276 INFO     Starting server at ssl:8000:privateKey=/etc/letsencrypt/live/pongpongback.duckdns.org/fullchain.pem:certKey=/etc/letsencrypt/live/pongpongback.duckdns.org/privkey.pem
+2024-03-29 12:45:35,277 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2024-03-29 12:45:35,277 INFO     Configuring endpoint ssl:8000:privateKey=/etc/letsencrypt/live/pongpongback.duckdns.org/fullchain.pem:certKey=/etc/letsencrypt/live/pongpongback.duckdns.org/privkey.pem
+2024-03-29 12:45:35,288 INFO     Listening on TCP address 0.0.0.0:8000
+127.0.0.1:40650 - - [29/Mar/2024:12:45:40] "GET /game" 301 -
+127.0.0.1:40658 - - [29/Mar/2024:12:45:40] "GET /game/" 200 1616
+127.0.0.1:45590 - - [29/Mar/2024:12:45:51] "GET /game" 301 -
+127.0.0.1:45600 - - [29/Mar/2024:12:45:51] "GET /game/" 200 1616
+127.0.0.1:34494 - - [29/Mar/2024:12:46:00] "GET /game" 301 -
+127.0.0.1:34502 - - [29/Mar/2024:12:46:00] "GET /game/" 200 1616
+127.0.0.1:59118 - - [29/Mar/2024:12:46:11] "GET /game" 301 -
+127.0.0.1:59120 - - [29/Mar/2024:12:46:11] "GET /game/" 200 1616
+127.0.0.1:59124 - - [29/Mar/2024:12:46:17] "GET /game/on/4p/lobbi/" 200 5758
+127.0.0.1:43948 - - [29/Mar/2024:12:46:18] "WSCONNECTING /ws/game/on/4p/lobbi/" - -
+127.0.0.1:43948 - - [29/Mar/2024:12:46:18] "WSCONNECT /ws/game/on/4p/lobbi/" - -
+127.0.0.1:43964 - - [29/Mar/2024:12:46:19] "GET /game/on/4p/lobbi/" 200 5758
+127.0.0.1:43968 - - [29/Mar/2024:12:46:19] "WSCONNECTING /ws/game/on/4p/lobbi/" - -
+127.0.0.1:43968 - - [29/Mar/2024:12:46:19] "WSCONNECT /ws/game/on/4p/lobbi/" - -
+127.0.0.1:43982 - - [29/Mar/2024:12:46:22] "GET /game/on/4p/lobbi/" 200 5758
+127.0.0.1:43988 - - [29/Mar/2024:12:46:22] "WSCONNECTING /ws/game/on/4p/lobbi/" - -
+127.0.0.1:43988 - - [29/Mar/2024:12:46:22] "WSCONNECT /ws/game/on/4p/lobbi/" - -
+127.0.0.1:43998 - - [29/Mar/2024:12:46:24] "GET /game/on/4p/lobbi/" 200 5758
+127.0.0.1:44008 - - [29/Mar/2024:12:46:24] "WSCONNECTING /ws/game/on/4p/lobbi/" - -
+127.0.0.1:44008 - - [29/Mar/2024:12:46:24] "WSCONNECT /ws/game/on/4p/lobbi/" - -
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+l   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+p   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+o   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+i   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!df3335571768497ab5fb8481af50878b
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+s   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   Not Found: /
+2024-03-29 12:47:19,150 WARNING  Not Found: /
+2024-03-29 12:47:57,936 INFO     Killed 0 pending application instances
+specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+127.0.0.1:54726 - - [29/Mar/2024:12:47:19] "GET /" 404 2356
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!3361ab93a59a47849090232b5dcd1734
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!27fe05b070244f79a21b831bd57f1159
+127.0.0.1:43988 - - [29/Mar/2024:12:47:32] "WSDISCONNECT /ws/game/on/4p/lobbi/" - -
+127.0.0.1:44008 - - [29/Mar/2024:12:47:35] "WSDISCONNECT /ws/game/on/4p/lobbi/" - -
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+d   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+a   specific.bb42bda67aa7402dacd7b6330fb9e09d!e47a9645a4aa4b57807eff84f097165a
+127.0.0.1:36550 - - [29/Mar/2024:12:47:43] "GET /game" 301 -
+127.0.0.1:36552 - - [29/Mar/2024:12:47:43] "GET /game" 301 -
+127.0.0.1:36568 - - [29/Mar/2024:12:47:43] "GET /game/" 200 1616
+127.0.0.1:36572 - - [29/Mar/2024:12:47:43] "GET /game/" 200 1616
+127.0.0.1:43948 - - [29/Mar/2024:12:47:43] "WSDISCONNECT /ws/game/on/4p/lobbi/" - -
+127.0.0.1:43968 - - [29/Mar/2024:12:47:43] "WSDISCONNECT /ws/game/on/4p/lobbi/" - -
