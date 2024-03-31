@@ -12,5 +12,5 @@ urlpatterns = [
 	# online
 	path('on/2p/<str:room_name>/', views.on2proom, name='on2proom'),
 	path('on/4p/<str:room_name>/', views.on4proom, name='on4proom'),
-	# path('on/tour/<str:room_name>/', views.ontourroom, name='ontourroom'),
+	path('on/tour/<str:room_name>/', views.ontourroom, name='ontourroom'),
 ]

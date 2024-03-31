@@ -46,9 +46,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-        self.heartbeat_interval = 10  # seconds
-        self.last_heartbeat_time = time.time()
-        self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
+        # self.heartbeat_interval = 10  # seconds
+        # self.last_heartbeat_time = time.time()
+        # self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
 
         self.game_state = game_manager.get_or_create_game(self.room_name)
         self.game_state['connected_clients_count'] += 1  # 클라이언트 수 증가
@@ -73,7 +73,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
 
-        self.heartbeat_task.cancel()
+        # self.heartbeat_task.cancel()
 
         if self.game_state['connected_clients_count'] > 0:
           # 게임 종료 메시지를 전송합니다.
@@ -99,7 +99,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
 
-        self.last_heartbeat_time = time.time()
+        # self.last_heartbeat_time = time.time()
         # print(message, " ", self.channel_name)
 
         if self.player_number == 1:

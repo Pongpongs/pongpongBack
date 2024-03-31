@@ -4,7 +4,7 @@ from . import off4pconsumers
 from . import offtourconsumers
 from . import on2pconsumers
 from . import on4pconsumers
-# from . import ontourconsumers
+from . import ontourconsumers
 
 websocket_urlpatterns = [
 	# Offline 1 vs 1
@@ -18,5 +18,5 @@ websocket_urlpatterns = [
 	# Online 4p
 	re_path(r'ws/game/on/4p/(?P<room_name>\w+)/$', on4pconsumers.GameConsumer.as_asgi()),
 	# Online tournament
-	# re_path(r'ws/game/on/tour/(?P<room_name>\w+)/$', ontourconsumers.GameConsumer.as_asgi()),
+	re_path(r'ws/game/on/tour/(?P<room_name>\w+)/$', ontourconsumers.GameConsumer.as_asgi()),
 ]

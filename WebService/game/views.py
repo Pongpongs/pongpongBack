@@ -19,5 +19,5 @@ def on2proom(request, room_name):
 def on4proom(request, room_name):
 	return render(request, "game/on4proom.html", {"room_name": room_name})
 
-# def ontourroom(request, room_name):
-# 	return render(request, "game/ontourroom.html", {"room_name": room_name})
+def ontourroom(request, room_name):
+	return render(request, "game/ontourroom.html", {"room_name": room_name})

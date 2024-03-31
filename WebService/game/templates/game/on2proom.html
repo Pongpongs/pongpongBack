@@ -37,7 +37,6 @@
 		</style>
 
 		
-		<script type="module" src="{% static 'js/on2premoteGame.js' %}" defer></script>
 
 	</head>
 
@@ -63,6 +62,12 @@
         
       var scoreBoard = {p1 : 0, p2: 0}
       var ballPosition = {x:0, y:0};
+			
+			// setInterval(() => {
+			// 	if (chatSocket.readyState === WebSocket.OPEN) {
+			// 			chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+			// 	}
+			// }, 10000); // 10초마다 실행
 
 			document.addEventListener('keydown', function(event) {
             const keyName = event.key;
@@ -149,11 +154,6 @@
 				messageInputDom.value = '';
 			};			//여기는 나중가선 지우기
 			
-			setInterval(() => {
-			if (chatSocket.readyState === WebSocket.OPEN) {
-				chatSocket.send(JSON.stringify({ type: "heartbeat" }));
-			}
-		}, 1000); // 10초마다 실행
 		</script>
 		<div id="scoreBoard" style="text-align: center; margin-bottom: 20px;">
 				Player 1: <span id="scorePlayer1">0</span> | 
@@ -161,6 +161,8 @@
 		</div>
 
 		<div id="gameContainer" style="width: 800px; height: 100px; margin: auto;"></div>
+		<script type="module" src="{% static 'js/on2premoteGame.js' %}" defer></script>
 
+		
 	</body>
 </html>

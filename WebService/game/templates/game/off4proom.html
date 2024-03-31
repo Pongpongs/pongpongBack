@@ -69,9 +69,18 @@
 						bar4: {x: 0, y:0}
       };
         
-      		var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
-    		var ballPosition = {x:0, y:0};
+      var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
+      var ballPosition = {x:0, y:0};
 			let keyStates = {'q': false, 'e': false, 'i': false, 'p':false, 'z': false, 'c': false, 'n': false, 'm':false};
+			
+			
+
+
+			setInterval(() => {
+				if (chatSocket.readyState === WebSocket.OPEN) {
+					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
+				}
+			}, 10000); // 10초마다 실행
 
 
 			document.addEventListener('keydown', function(event) {
@@ -92,12 +101,7 @@
         if (chatSocket.readyState === WebSocket.OPEN) {
           chatSocket.send(JSON.stringify(keyStates));
         }
-     	}
-	 	setInterval(() => {
-			if (chatSocket.readyState === WebSocket.OPEN) {
-				chatSocket.send(JSON.stringify({ type: "heartbeat" }));
-			}
-		}, 1000); // 10초마다 실행
+      }
 
 			// 채팅창 - 채팅 내역 출력
 			chatSocket.onmessage = function(event)	{
@@ -195,3 +199,4 @@
 		<div id="gameContainer" style="width: 800px; height: 100px; margin: auto;"></div>
 	</body>
 </html>
+

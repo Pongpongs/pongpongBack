@@ -16,18 +16,22 @@ def realback(request):
 		return HttpResponseNotAllowed(['POST']) # 405 상태코드와 함께 어떤 메소드가 허용되는지(['POST']) 클라이언트에게 알려주는 용도
 	token_header = request.headers.get('Authorization')
 	if token_header is None:
-		return HttpResponse('Unauthorized data error', status=401)
+		return HttpResponse('Unauthorized - Invalid Authorization header', status=401)
 	token_scheme, token_value = token_header.split(' ')
+	if token_scheme.lower() != 'bearer':
+		return HttpResponse('Unauthorized - Invalid token scheme', status=401)
 	data = decode_token(token_value)
+	if data is None:
+		return HttpResponse('Unauthorized - Decoding token error', status=401)
 	user_email = data.get('user_email')
 	access_token = data.get('access_token')
 	user_info = get_user_info(access_token)
 	if user_info is None:
-		return HttpResponse('Unauthorized access token', status=401)
+		return HttpResponse('Unauthorized - Invalid access token', status=401)
 	# 아래 이메일 대조 로직의 필요성?
 	valid_email = user_info.get('email')
 	if user_email != valid_email:
-		return HttpResponse('Unauthorized email', status=401)
+		return HttpResponse('Unauthorized - Email mismatch', status=401)
 	# 로그인 성공, DB 등록
 	registerUserinDB(valid_email)
 	# db 등록된 이메일 확인

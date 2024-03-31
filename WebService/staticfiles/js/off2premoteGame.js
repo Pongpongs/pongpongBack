@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
@@ -85,5 +84,8 @@ class App {
 
 // App 인스턴스 생성
 window.onload = () => {
+
   const app = new App();
+
+
 }
