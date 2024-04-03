@@ -3,6 +3,8 @@ import uuid
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+# remote tournament
+
 
 class GameManager:
     def __init__(self):
@@ -10,6 +12,8 @@ class GameManager:
 
     def get_or_create_game(self, room_name):
         if room_name not in self.games:
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
             self.games[room_name] = {
                 'play_bar1_position': {'x': 0, 'y': 9},
                 'play_bar2_position': {'x': 0, 'y': -9},
@@ -64,6 +68,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 asyncio.create_task(self.ball_position_updater())
 
         if self.game_state['connected_clients_count'] >= 5:
+            print("come hre b1tch");
             await self.send(text_data=json.dumps({
                 "type": "error",
                 "message": "Game is full. You cannot join this game."
@@ -72,22 +77,41 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await asyncio.sleep(3)
             await self.close()
 
-    async def disconnect(self, close_code):
-        self.game_state['connected_clients_count'] -= 1
+    # async def disconnect(self, close_code):
+    #     self.game_state['connected_clients_count'] -= 1
 
-        if self.game_state['connected_clients_count'] > 0:
-          # 게임 종료 메시지를 전송합니다.
+    #     if self.game_state['connected_clients_count'] >= 0:
+    #       # 게임 종료 메시지를 전송합니다.
+    #         await self.channel_layer.group_send(
+    #             self.room_group_name,
+    #             {
+    #                 "type": "game_over_message",
+    #                 "message": "The other player has left. The game is over."
+    #             })
+
+    #     # if self.game_state['connected_clients_count'] == 0:
+    #     game_manager.end_game(self.room_name)
+    #     print("!!!!!!!!");
+    #     await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+    #     print("????????")
+
+    async def disconnect(self, close_code):
+        # 클라이언트 수 감소
+        #print(f"!!!!!1 {self.game_state['connected_clients_count']}");
+        if self.game_state['connected_clients_count'] == 4:
+
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     "type": "game_over_message",
-                    "message": "The other player has left. The game is over."
-                })
-
-        if self.game_state['connected_clients_count'] == 0:
+                    "message": "The game session has ended."
+                }
+            )
             game_manager.end_game(self.room_name)
+            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        else:
+            self.game_state['connected_clients_count'] -= 1
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -252,9 +276,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # 마지막 3번째 경기가 끝나면 토너먼트가 끝나야함.
         await self.refresh_game_state()
         self.game_state['tournament_over_flag'] = True
+        self.game_state['current_round'] = 0
 
         await self.channel_layer.group_send(
-            self.session_id,  # 세션 ID를 기반으로 그룹명 지정
+            self.room_group_name,  # 세션 ID를 기반으로 그룹명 지정
             {
                 'type': 'game_update',
                 # 'game_state': self.game_state
@@ -270,6 +295,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'tournament_over_flag': self.game_state['tournament_over_flag']
             }
         )
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "tournament_over_message",
+                "message": "Tournament is over.."
+            })
+
         game_manager.end_game(self.room_name)
 
     async def game_update(self, event):
@@ -291,5 +323,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # 클라이언트에게 게임 종료 메시지를 전송합니다.
         await self.send(text_data=json.dumps({
             'type': 'game_over',
+            'message': event['message']
+        }))
+
+    async def tournament_over_message(self, event):
+        # 클라이언트에게 게임 종료 메시지를 전송합니다.
+        await self.send(text_data=json.dumps({
+            'type': 'tournament_over',
             'message': event['message']
         }))

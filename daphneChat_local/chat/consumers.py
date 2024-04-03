@@ -33,11 +33,18 @@ class GameManager:
         async with self.lock:
             self.games[session_id]['connected_clients_count'] += 1
 
+    # async def decrement_connected_clients(self, session_id):
+    #     async with self.lock:
+    #         self.games[session_id]['connected_clients_count'] -= 1
+    #         if self.games[session_id]['connected_clients_count'] == 0:
+    #             self.end_game_session(session_id)
+
     async def decrement_connected_clients(self, session_id):
         async with self.lock:
-            self.games[session_id]['connected_clients_count'] -= 1
-            if self.games[session_id]['connected_clients_count'] == 0:
-                self.end_game_session(session_id)
+            if session_id in self.games:  # Check if session_id exists
+                self.games[session_id]['connected_clients_count'] -= 1
+                if self.games[session_id]['connected_clients_count'] == 0:
+                    self.end_game_session(session_id)
 
     def get_game_state(self, session_id):
         return self.games.get(session_id)

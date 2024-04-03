@@ -56,6 +56,18 @@
 				`${wsScheme}://${window.location.host}/ws/chat/${roomName}/`
 			);
 			
+			let clientNickname1 = "jeongmil";
+			let clientNickname2 = "yback";
+
+			function sendClientNickname() {
+				// if (chatSocket.readyState === WebSocket.OPEN) {
+				// 	chatSocket.send(JSON.stringify({ 
+				// 		type: "nickname",
+				// 		nickname1: clientNickname,
+				// 		nickname2: clientNickname2
+				// 	}));
+				// }
+			}
 
 			var barPositions = {
             bar1: {x: 0, y:0},
@@ -83,7 +95,7 @@
 
 			function sendKeyStates() {
         if (chatSocket.readyState === WebSocket.OPEN) {
-          chatSocket.send(JSON.stringify(keyStates));
+           chatSocket.send(JSON.stringify(keyStates));
         }
       }
 
@@ -92,6 +104,11 @@
 					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
 				}
 			}, 10000); // 10초마다 실행
+
+
+			chatSocket.onopen = function(event) {
+				sendClientNickname();
+			}
 
 			chatSocket.onclose = function(event) {
         if (event.code === 4000) {
@@ -146,11 +163,6 @@
           document.getElementById('scorePlayer2').innerText = data.score_player2;
 				}
 				
-			};
-
-			// 웹 소켓 강제 종료시 에러 처리 - 에러 로그 출력
-			chatSocket.onclose = function(event) {
-				console.error('chat socket closed unexpectedly');
 			};
 
 

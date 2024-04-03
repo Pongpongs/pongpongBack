@@ -4,6 +4,7 @@ import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 import time
 
+# remote 1 on 1
 
 class GameManager:
     def __init__(self):

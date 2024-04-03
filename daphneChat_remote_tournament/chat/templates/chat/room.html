@@ -1,5 +1,6 @@
 {% load static %}
 
+<!-- remote torunament room.html -->
 
 <!DOCTYPE html>
 <html>
@@ -75,7 +76,12 @@
 			// 채팅창 - 채팅 내역 출력
 			chatSocket.onmessage = function(event)	{
 				const data = JSON.parse(event.data);
-				
+
+				if (data.type === 'tournament_over') {
+					setTimeout(function() {
+                window.location.href = '/chat'; // 3초 후 리다이렉션
+            }, 3000);		
+				}
 				if (data.type === "error") {	//세번째 클라이언트가 접속했을 때
 					alert(data.message);
 					setTimeout(function() {
@@ -86,7 +92,13 @@
 				if (data.type === "game_over") {
 					// console.log("!!!!!!!!!!!");
 					alert(data.message);
-					window.location.href = '/chat'; // 사용자가 확인을 누른 직후 리다이렉션
+					if (window.location.pathname === '/chat') {
+ 					   window.location.reload(); // 현재 페이지가 /chat일 때 페이지를 새로고침
+					} else {
+    				window.location.href = '/chat'; // 다른 페이지에 있을 때는 /chat으로 이동
+					}
+					// window.location.href = '/chat'; // 사용자가 확인을 누른 직후 리다이렉션
+					console.log("!! : " + window.location.pathname);
 				}
 
 				if (data.game_over_flag !== undefined) {
