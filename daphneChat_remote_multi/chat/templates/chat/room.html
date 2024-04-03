@@ -57,6 +57,13 @@
 			const roomName = JSON.parse(document.getElementById('room-name').textContent);
 			const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
 						
+		// 	window.addEventListener("beforeunload", function (e) {
+    //     // 새로고침을 시도할 때 경고 메시지를 표시
+    //     var confirmationMessage = "Are you sure you want to leave?";
+
+    //     (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    //     return confirmationMessage;                            //Gecko + Webkit, Safari, Chrome
+    // });
 			
 			var barPositions = {
             bar1: {x: 0, y:0},
@@ -88,7 +95,17 @@
 				
 				if (data.type === "error") {
 					alert(data.message);
+					setTimeout(function() {
+                window.location.href = '/chat'; // 3초 후 리다이렉션
+            }, 3000);
 				}
+
+				if (data.type === "game_over") {
+					// console.log("!!!!!!!!!!!");
+					alert(data.message);
+					window.location.href = '/chat'; // 사용자가 확인을 누른 직후 리다이렉션
+				}
+
 				if (data.game_over_flag !== undefined) {
 					if (data.game_over_flag == true) {
 						var gameOverMessage = document.getElementById('gameOverMessage');

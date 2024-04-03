@@ -92,7 +92,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         self.last_heartbeat_time = time.time()
 
-        print(keyStates)
         # 각 키에 대한 상태 확인 및 처리
         if keyStates.get('a'):
             self.game_state['play_bar1_position']['x'] = max(
