@@ -34,8 +34,13 @@
 			.winner2 {
 					color: red; /* Player 2 승리시 빨간색 */
 			}
+			.winner3 {
+					color: blue; /* Player 2 승리시 빨간색 */
+			}
+			.winner4 {
+					color: yellow; /* Player 2 승리시 빨간색 */
+			}
 		</style>
-
 		
 		<script type="module" src="{% static 'js/remoteGame.js' %}" defer></script>
 
@@ -113,17 +118,24 @@
 						var gameOverMessage = document.getElementById('gameOverMessage');
             gameOverMessage.style.display = 'block'; // 메시지 표시
             if (data.game_winner == 1) {
-                gameOverMessage.innerHTML = "Player" + data.player1_id+ "Wins!"; // Player 1 승리 메시지
+							if (data.player1_id == 1) {
+								gameOverMessage.innerHTML = "Player " + data.player1_id+ " Wins!"; // Player 1 승리 메시지
                 gameOverMessage.className = "winner1"; // 초록색 스타일 적용
+							}
+							if (data.player1_id == 3) {
+								gameOverMessage.innerHTML = "Player " + data.player1_id+ " Wins!"; // Player 1 승리 메시지
+                gameOverMessage.className = "winner3"; // 초록색 스타일 적용
+							}
+                
             } else if (data.game_winner == 2) {
-                gameOverMessage.innerHTML = "Player" + data.player2_id+ "Wins!"; // Player 2 승리 메시지
+							if (data.player2_id == 2) {
+								gameOverMessage.innerHTML = "Player" + data.player2_id+ "Wins!"; // Player 2 승리 메시지
                 gameOverMessage.className = "winner2"; // 빨간색 스타일 적용
-            } else if (data.game_winner == 3) {
-                gameOverMessage.innerHTML = "Player 3 Lost!"; // Player 3 승리 메시지
-                gameOverMessage.className = "winner3"; // 파란색 스타일 적용
-            } else if (data.game_winner == 4) {
-                gameOverMessage.innerHTML = "Player 4 Lost!"; // Player 4 승리 메시지
-                gameOverMessage.className = "winner4"; // 노란색 스타일 적용
+							}
+							if (data.player2_id == 4) {
+								gameOverMessage.innerHTML = "Player" + data.player2_id+ "Wins!"; // Player 2 승리 메시지
+                gameOverMessage.className = "winner4"; // 빨간색 스타일 적용
+							} 
             } 
 						setTimeout(function() {
 							gameOverMessage.style.display = 'none';
@@ -179,7 +191,7 @@
 					'message': message
 				}));
 				messageInputDom.value = '';
-			};			//여기는 나중가선 지우기
+			};
 			
 		</script>
 		<div id="scoreBoard" style="text-align: center; margin-bottom: 20px;">

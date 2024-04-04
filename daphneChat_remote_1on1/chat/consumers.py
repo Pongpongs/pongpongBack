@@ -28,7 +28,6 @@ class GameManager:
         if room_name in self.games:
             del self.games[room_name]
 
-
 game_manager = GameManager()
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -78,7 +77,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         if self.game_state['connected_clients_count'] == 0:
             game_manager.end_game(self.room_name)
-
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
@@ -159,7 +157,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
-
         game_manager.end_game(self.room_name)
 
     async def game_update(self, event):
