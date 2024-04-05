@@ -78,7 +78,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         await game_manager.decrement_connected_clients(self.session_id)
-
         self.heartbeat_task.cancel()
 
         await self.channel_layer.group_discard(self.session_id, self.channel_name)
@@ -87,7 +86,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         keyStates = text_data_json
 
-        self.last_heartbeat_time = time.time()
+        if text_data_json.get('type') == "heartbeat":
+            self.last_heartbeat_time = time.time()
 
         if keyStates.get('q'):
             self.game_state['play_bar1_position']['x'] = max(

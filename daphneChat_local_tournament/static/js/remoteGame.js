@@ -72,6 +72,34 @@ class App {
 
   _animate() {
     requestAnimationFrame(() => this._animate());
+
+    if (playerIDs.p1 === 1) {
+      this._bar1.material.color.set(0x00FF00); // Player 1이면 초록색
+    }
+    if (playerIDs.p1 === 2) {
+      this._bar1.material.color.set(0xFF0000); // Player 2이면 빨간색
+    } 
+    if (playerIDs.p1 === 3) {
+      this._bar1.material.color.set(0x0000FF); // Player 3이면 파랑색
+    }
+    if (playerIDs.p1 === 4) {
+      this._bar1.material.color.set(0xFFFF00); // Player 3이면 파랑색
+    }
+
+    if (playerIDs.p2 === 1) {
+      this._bar2.material.color.set(0x00FF00); // Player 1이면 초록색
+    }
+    if (playerIDs.p2 === 2) {
+      this._bar2.material.color.set(0xFF0000); // Player 2이면 빨간색
+    } 
+    if (playerIDs.p2 === 3) {
+      this._bar2.material.color.set(0x0000FF); // Player 3이면 파랑색
+    }
+    if (playerIDs.p2 === 4) {
+      this._bar2.material.color.set(0xFFFF00); // Player 3이면 파랑색
+    }
+  
+     
     // 바의 x 위치를 업데이트합니다. WebSocket을 통해 받은 barPosition.x 값을 사용합니다.
     this._bar1.position.set(barPositions.bar1.x, barPositions.bar1.y, 0);
     this._bar2.position.set(barPositions.bar2.x, barPositions.bar2.y, 0);

@@ -66,9 +66,10 @@
             bar1: {x: 0, y:0},
             bar2: {x: 0, y:0}
       };
-        
-      var scoreBoard = {p1 : 0, p2: 0}
+      var playerIDs = {p1 : 1, p2 : 2};
+      var scoreBoard = {p1 : 0, p2: 0};
       var ballPosition = {x:0, y:0};
+			
 			let keyStates = {'a': false, 'd': false, 'j': false, 'l':false};
 			
 			document.addEventListener('keydown', function(event) {
@@ -112,7 +113,11 @@
 			// 채팅창 - 채팅 내역 출력
 			chatSocket.onmessage = function(event)	{
 				const data = JSON.parse(event.data);
+
+				playerIDs.p1 = data.player1_id;
+				playerIDs.p2 = data.player2_id;
 				
+				console.log(data.player1_id );
 				if (data.game_over_flag !== undefined) {
 					if (data.game_over_flag == true) {
 						var gameOverMessage = document.getElementById('gameOverMessage');

@@ -56,19 +56,6 @@
 				`${wsScheme}://${window.location.host}/ws/chat/${roomName}/`
 			);
 			
-			let clientNickname1 = "jeongmil";
-			let clientNickname2 = "yback";
-
-			function sendClientNickname() {
-				// if (chatSocket.readyState === WebSocket.OPEN) {
-				// 	chatSocket.send(JSON.stringify({ 
-				// 		type: "nickname",
-				// 		nickname1: clientNickname,
-				// 		nickname2: clientNickname2
-				// 	}));
-				// }
-			}
-
 			var barPositions = {
             bar1: {x: 0, y:0},
             bar2: {x: 0, y:0}
@@ -164,7 +151,6 @@
 				}
 				
 			};
-
 
 			document.querySelector('#chat-message-input').focus();
 			document.querySelector('#chat-message-input').onkeyup = function(event) {
