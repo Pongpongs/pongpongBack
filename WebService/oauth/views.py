@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import os
 import jwt
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 
 # Create your views here.
 @csrf_exempt

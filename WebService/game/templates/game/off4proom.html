@@ -6,7 +6,7 @@
 	<head>
 		
 		<meta charset="utf-8"/>
-		<title>Game Room</title>
+		<title>Chat Room</title>
 		<script type="importmap">
 			{
 					"imports": {
@@ -72,9 +72,6 @@
       var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
       var ballPosition = {x:0, y:0};
 			let keyStates = {'q': false, 'e': false, 'i': false, 'p':false, 'z': false, 'c': false, 'n': false, 'm':false};
-			
-			
-
 
 			setInterval(() => {
 				if (chatSocket.readyState === WebSocket.OPEN) {
@@ -199,4 +196,3 @@
 		<div id="gameContainer" style="width: 800px; height: 100px; margin: auto;"></div>
 	</body>
 </html>
-

@@ -28,13 +28,13 @@ class App {
   _createBars() {
     // 바의 기하학적 모양과 재질을 정의합니다.
     const geometry = new THREE.BoxGeometry(2, 0.2, 0.2);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
     this._bar1 = new THREE.Mesh(geometry, material);
     // 씬에 바를 추가합니다.
     this._scene.add(this._bar1);
 
     const geometry2 = new THREE.BoxGeometry(2, 0.2, 0.2);
-    const material2 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const material2 = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
     this._bar2 = new THREE.Mesh(geometry2, material2);
     this._scene.add(this._bar2);
   }

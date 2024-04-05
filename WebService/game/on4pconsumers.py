@@ -2,6 +2,7 @@ import json
 import uuid
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
+# //remote multi play
 
 class GameManager:
     def __init__(self):
@@ -9,6 +10,7 @@ class GameManager:
 
     def get_or_create_game(self, room_name):
         if room_name not in self.games:
+            print("!!!!!!!!!!!!!!!")
             self.games[room_name] = {
                 'play_bar1_position': {'x': 0, 'y': 9},
                 'play_bar2_position': {'x': 0, 'y': -9},
@@ -34,10 +36,11 @@ class GameManager:
 
 game_manager = GameManager()
 
+
 class GameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-
+        await asyncio.sleep(1)
         # group을 미리 만들거나 특정 닉네임을 기준으로 만드는방식?
         # 그룹에 빈공간이 있는지, 특정 닉네님이 있는지 확인
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -49,10 +52,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         ))
 
         await self.accept()
-
         self.game_state = game_manager.get_or_create_game(self.room_name)
-        self.game_state['connected_clients_count'] += 1  # 클라이언트 수 증가
 
+        self.game_state['connected_clients_count'] += 1  # 클라이언트 수 증가
+        print("connected clients :" +
+              str(self.game_state['connected_clients_count']))
+
+        # print("connected clients :" + self.game_state['connected_clients_count'])
         self.player_number = self.game_state['connected_clients_count']
 
         if self.game_state['connected_clients_count'] == 4:
@@ -60,30 +66,48 @@ class GameConsumer(AsyncWebsocketConsumer):
             if not self.game_state['updating_ball_position']:
                 self.game_state['updating_ball_position'] = True
                 asyncio.create_task(self.ball_position_updater())
-        
+
         if self.game_state['connected_clients_count'] >= 5:
             await self.send(text_data=json.dumps({
-            "type": "error",
-            "message": "Game is full. You cannot join this game."
-        }))
-        
-            
+                "type": "error",
+                "message": "Game is full. You cannot join this game."
+            }))
+            self.game_state['connected_clients_count'] -= 1
+            await asyncio.sleep(3)
+            await self.close()
 
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
-        if self.game_state['connected_clients_count'] == 0:
-            game_manager.end_game(self.room_name)
+
+        if self.game_state['connected_clients_count'] >= 3:
+            print("QQQQQQQQQQQQn")
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "game_over_message",
+                    "message": "The other player has left. The game is over."
+                })
+
+        # if self.game_state['connected_clients_count'] == 0:
+        self.game_state['connected_clients_count'] = 0
+        game_manager.end_game(self.room_name)
+
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+        # self.game_state['connected_clients_count'] -= 1
+        # if self.game_state['connected_clients_count'] == 0:
+        #     game_manager.end_game(self.room_name)
+        # await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
-        print(message, " ", self.channel_name)
+        # print(message, " ", self.channel_name)
 
         if self.player_number == 1:
             if message == 'a':
                 self.game_state['play_bar1_position']['x'] = max(
-                    -9, self.game_state['play_bar1_position']['x'] - 0.4)
+                    -8, self.game_state['play_bar1_position']['x'] - 0.4)
             elif message == 'd':
                 self.game_state['play_bar1_position']['x'] = min(
                     9, self.game_state['play_bar1_position']['x'] + 0.4)
@@ -94,12 +118,12 @@ class GameConsumer(AsyncWebsocketConsumer):
                     -9, self.game_state['play_bar2_position']['x'] - 0.4)
             elif message == 'd':
                 self.game_state['play_bar2_position']['x'] = min(
-                    9, self.game_state['play_bar2_position']['x'] + 0.4)
+                    8, self.game_state['play_bar2_position']['x'] + 0.4)
 
         if self.player_number == 3:
             if message == 'a':
                 self.game_state['play_bar4_position']['y'] = max(
-                    -9, self.game_state['play_bar4_position']['y'] - 0.4)
+                    -8, self.game_state['play_bar4_position']['y'] - 0.4)
             elif message == 'd':
                 self.game_state['play_bar4_position']['y'] = min(
                     9, self.game_state['play_bar4_position']['y'] + 0.4)
@@ -110,7 +134,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     -9, self.game_state['play_bar3_position']['y'] - 0.4)
             elif message == 'd':
                 self.game_state['play_bar3_position']['y'] = min(
-                    9, self.game_state['play_bar3_position']['y'] + 0.4)
+                    8, self.game_state['play_bar3_position']['y'] + 0.4)
 
         # pass
         # self._update_ball_position()
@@ -142,7 +166,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 and self.game_state['play_bar4_position']['y'] - bar_width / 2 < self.game_state['ball_position']['y'] < self.game_state['play_bar4_position']['y'] + bar_width / 2:
             self.game_state['ball_velocity']['x'] *= -1  # y 방향 반전
 
-        
         # 벽과의 충돌 처리
         if self.game_state['ball_position']['y'] <= -10 or self.game_state['ball_position']['y'] >= 10:
             if self.game_state['ball_position']['y'] > 10:
@@ -154,8 +177,8 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
             self.game_state['play_bar3_position'] = {'x': 9, 'y': 0}
             self.game_state['play_bar4_position'] = {'x': -9, 'y': 0}
-            await asyncio.sleep(3) 
-        
+            await asyncio.sleep(3)
+
         if self.game_state['ball_position']['x'] <= -10 or self.game_state['ball_position']['x'] >= 10:
             if self.game_state['ball_position']['x'] > 10:
                 self.game_state['score_player3'] += 1
@@ -177,7 +200,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         #     self.game_state['game_over_flag'] = True
         #     self.game_state['game_winner'] = 1 if self.game_state['score_player1'] >= self.game_state.get(
         #         'game_over_score', 5) else 2
-        
+
         if self.game_state['score_player1'] == 3:
             self.game_state['game_over_flag'] = True
             self.game_state['game_winner'] = 1
@@ -239,4 +262,10 @@ class GameConsumer(AsyncWebsocketConsumer):
             'score_player4': self.game_state['score_player4'],
             'game_over_flag': self.game_state['game_over_flag'],
             'game_winner': self.game_state['game_winner']
+        }))
+
+    async def game_over_message(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'game_over',
+            'message': event['message']
         }))

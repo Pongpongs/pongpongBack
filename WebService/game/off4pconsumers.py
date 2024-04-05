@@ -5,7 +5,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asyncio import Lock
 import time
 
-
 class GameManager:
     def __init__(self):
         self.games = {}
@@ -21,7 +20,7 @@ class GameManager:
             'play_bar3_position': {'x': 9, 'y': 0},
             'play_bar4_position': {'x': -9, 'y': 0},
             'ball_position': {'x': 0, 'y': 0},
-            'ball_velocity': {'x': 0.03, 'y': 0.03},
+            'ball_velocity': {'x': 0.06, 'y': 0.05},
             'score_player1': 0,
             'score_player2': 0,
             'score_player3': 0,
@@ -39,9 +38,10 @@ class GameManager:
 
     async def decrement_connected_clients(self, session_id):
         async with self.lock:
-            self.games[session_id]['connected_clients_count'] -= 1
-            if self.games[session_id]['connected_clients_count'] == 0:
-                self.end_game_session(session_id)
+            if session_id in self.games:
+                self.games[session_id]['connected_clients_count'] -= 1
+                if self.games[session_id]['connected_clients_count'] == 0:
+                    self.end_game_session(session_id)
 
     def get_game_state(self, session_id):
         return self.games.get(session_id)
@@ -90,7 +90,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         if keyStates.get('q'):
             self.game_state['play_bar1_position']['x'] = max(
-                -9, self.game_state['play_bar1_position']['x'] - 0.4)
+                -8, self.game_state['play_bar1_position']['x'] - 0.4)
         if keyStates.get('e'):
             self.game_state['play_bar1_position']['x'] = min(
                 9, self.game_state['play_bar1_position']['x'] + 0.4)
@@ -100,11 +100,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                 -9, self.game_state['play_bar2_position']['x'] - 0.4)
         if keyStates.get('p'):
             self.game_state['play_bar2_position']['x'] = min(
-                9, self.game_state['play_bar2_position']['x'] + 0.4)
+                8, self.game_state['play_bar2_position']['x'] + 0.4)
 
         if keyStates.get('z'):
             self.game_state['play_bar4_position']['y'] = max(
-                -9, self.game_state['play_bar4_position']['y'] - 0.4)
+                -8, self.game_state['play_bar4_position']['y'] - 0.4)
         if keyStates.get('c'):
             self.game_state['play_bar4_position']['y'] = min(
                 9, self.game_state['play_bar4_position']['y'] + 0.4)
@@ -114,7 +114,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 -9, self.game_state['play_bar3_position']['y'] - 0.4)
         if keyStates.get('m'):
             self.game_state['play_bar3_position']['y'] = min(
-                9, self.game_state['play_bar3_position']['y'] + 0.4)
+                8, self.game_state['play_bar3_position']['y'] + 0.4)
 
     async def _update_ball_position(self):
         # 공 위치 업데이트
@@ -219,7 +219,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.game_state['play_bar3_position'] = {'x': -9, 'y': 0}
         self.game_state['play_bar4_position'] = {'x': 9, 'y': 0}
         self.game_state['ball_position'] = {'x': 0, 'y': 0}
-        self.game_state['ball_velocity'] = {'x': 0.03, 'y': 0.02}
+        self.game_state['ball_velocity'] = {'x': 0.06, 'y': 0.05}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
         self.game_state['score_player3'] = 0

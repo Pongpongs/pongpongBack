@@ -6,7 +6,7 @@
 	<head>
 		
 		<meta charset="utf-8"/>
-		<title>Chat Room</title>
+		<title>Game Room</title>
 		<script type="importmap">
 			{
 					"imports": {
@@ -60,7 +60,15 @@
 			
 			const chatSocket = new WebSocket(
 				`${wsScheme}://${publicIp}/ws/game/on/4p/${roomName}/`
-			);			
+			);	
+						
+		// 	window.addEventListener("beforeunload", function (e) {
+    //     // 새로고침을 시도할 때 경고 메시지를 표시
+    //     var confirmationMessage = "Are you sure you want to leave?";
+
+    //     (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    //     return confirmationMessage;                            //Gecko + Webkit, Safari, Chrome
+    // });
 			
 			var barPositions = {
             bar1: {x: 0, y:0},
@@ -68,7 +76,7 @@
 						bar3: {x: 0, y:0},
 						bar4: {x: 0, y:0}
       };
-        
+
       var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
       var ballPosition = {x:0, y:0};
 
@@ -88,7 +96,17 @@
 				
 				if (data.type === "error") {
 					alert(data.message);
+					setTimeout(function() {
+                window.location.href = '/game'; // 3초 후 리다이렉션
+            }, 3000);
 				}
+
+				if (data.type === "game_over") {
+					// console.log("!!!!!!!!!!!");
+					alert(data.message);
+					window.location.href = '/game'; // 사용자가 확인을 누른 직후 리다이렉션
+				}
+
 				if (data.game_over_flag !== undefined) {
 					if (data.game_over_flag == true) {
 						var gameOverMessage = document.getElementById('gameOverMessage');

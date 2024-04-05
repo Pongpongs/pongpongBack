@@ -30,10 +30,10 @@ DEBUG = True
 
 INSTALLED_APPS = [
 	'daphne',
-	'board',
+#	'board',
 	'oauth',
 	'game',
-	'sslserver',
+#	'sslserver',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,13 +85,24 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'pongpongdb',
+#         'USER': 'root',
+#         'PASSWORD': 'pong',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pongpongdb',
-        'USER': 'root',
-        'PASSWORD': 'pong',
-        'HOST': 'localhost',
+        'NAME': os.environ.get('DB_NAME', 'pongpongdb'),
+        'USER': os.environ.get('POSTGRES_USER', 'root'),
+        'PASSWORD': os.environ.get('POSTGRES_PASS', 'pong'),
+        'HOST': 'localhost', # PostgreSQL이 동일 컨테이너 내에서 실행되므로 이대로 유지
         'PORT': '5432',
     }
 }
@@ -141,4 +152,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['ec2-43-200-228-128.ap-northeast-2.compute.amazonaws.com', '43.200.228.128', 'pongpongback.duckdns.org', 'pongpongs.duckdns.org']
+ALLOWED_HOSTS = ['ec2-43-200-228-128.ap-northeast-2.compute.amazonaws.com', '43.200.228.128', 'pongpongback.duckdns.org', 'pongpongs.duckdns.org', 'pongpongstest.duckdns.org']

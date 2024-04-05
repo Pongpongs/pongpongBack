@@ -50,13 +50,15 @@
 
 		<script>
 			const roomName = JSON.parse(document.getElementById('room-name').textContent);
-			const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
+			//const wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
 			const publicIp = "43.200.228.128";
 
+			// const chatSocket = new WebSocket(
+			// 	`${wsScheme}://${publicIp}/ws/game/off/2p/${roomName}/`
+			// );
 			const chatSocket = new WebSocket(
-				`${wsScheme}://${publicIp}/ws/game/off/2p/${roomName}/`
+				`wss://${publicIp}/ws/game/off/2p/${roomName}/`
 			);
-			
 
 			var barPositions = {
             bar1: {x: 0, y:0},
@@ -84,7 +86,7 @@
 
 			function sendKeyStates() {
         if (chatSocket.readyState === WebSocket.OPEN) {
-          chatSocket.send(JSON.stringify(keyStates));
+           chatSocket.send(JSON.stringify(keyStates));
         }
       }
 
@@ -93,6 +95,11 @@
 					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
 				}
 			}, 10000); // 10초마다 실행
+
+
+			chatSocket.onopen = function(event) {
+				sendClientNickname();
+			}
 
 			chatSocket.onclose = function(event) {
         if (event.code === 4000) {
@@ -147,11 +154,6 @@
           document.getElementById('scorePlayer2').innerText = data.score_player2;
 				}
 				
-			};
-
-			// 웹 소켓 강제 종료시 에러 처리 - 에러 로그 출력
-			chatSocket.onclose = function(event) {
-				console.error('chat socket closed unexpectedly');
 			};
 
 

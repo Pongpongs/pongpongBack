@@ -32,11 +32,18 @@ class GameManager:
         async with self.lock:
             self.games[session_id]['connected_clients_count'] += 1
 
+    # async def decrement_connected_clients(self, session_id):
+    #     async with self.lock:
+    #         self.games[session_id]['connected_clients_count'] -= 1
+    #         if self.games[session_id]['connected_clients_count'] == 0:
+    #             self.end_game_session(session_id)
+
     async def decrement_connected_clients(self, session_id):
         async with self.lock:
-            self.games[session_id]['connected_clients_count'] -= 1
-            if self.games[session_id]['connected_clients_count'] == 0:
-                self.end_game_session(session_id)
+            if session_id in self.games:  # Check if session_id exists
+                self.games[session_id]['connected_clients_count'] -= 1
+                if self.games[session_id]['connected_clients_count'] == 0:
+                    self.end_game_session(session_id)
 
     def get_game_state(self, session_id):
         return self.games.get(session_id)
@@ -84,7 +91,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         self.last_heartbeat_time = time.time()
 
-        print(keyStates)
         # 각 키에 대한 상태 확인 및 처리
         if keyStates.get('a'):
             self.game_state['play_bar1_position']['x'] = max(

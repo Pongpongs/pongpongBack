@@ -12,6 +12,5 @@ rm -f nohup.out
 sleep 2
 
 echo "Starting Daphne server..."
-nohup daphne -e ssl:8000:privateKey=/etc/letsencrypt/live/pongpongback.duckdns.org/fullchain.pem:certKey=/etc/letsencrypt/live/pongpongback.duckdns.org/privkey.pem WebService.asgi:application &
-
+nohup daphne WebService.asgi:application &
 echo "Daphne has been started in the background."
