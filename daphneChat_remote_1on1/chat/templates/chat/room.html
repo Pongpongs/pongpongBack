@@ -36,8 +36,6 @@
 			}
 		</style>
 
-		
-
 	</head>
 
 	<body>
@@ -62,11 +60,11 @@
       var scoreBoard = {p1 : 0, p2: 0}
       var ballPosition = {x:0, y:0};
 			
-			// setInterval(() => {
-			// 	if (chatSocket.readyState === WebSocket.OPEN) {
-			// 			chatSocket.send(JSON.stringify({ type: "heartbeat" }));
-			// 	}
-			// }, 10000); // 10초마다 실행
+			setInterval(() => {
+				if (chatSocket.readyState === WebSocket.OPEN) {
+						chatSocket.send(JSON.stringify({ 'type': "heartbeat" }));
+				}
+			});
 
 			document.addEventListener('keydown', function(event) {
             const keyName = event.key;
