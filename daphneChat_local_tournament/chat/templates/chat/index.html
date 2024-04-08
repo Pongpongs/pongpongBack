@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8"/>
@@ -22,4 +22,43 @@
 			};
 		</script>
 	</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Rooms</title>
+    <style>
+        .player-input { display: block; margin-bottom: 7px; }
+        .player-input label { width: 80px; display: inline-block; }
+        .player-color { font-weight: bold; }
+        .player1 { color: green; }
+        .player2 { color: red; }
+        .player3 { color: blue; }
+        .player4 { color: yellow; }
+    </style>
+</head>
+<body>
+    What Tournament room would you like to enter?<br>
+    <input id="room-name-input" type="text" size="100"><br><br>
+    <div class="player-input"><label class="player-color player1">Player 1:  </label><input type="text" id="player1-name" placeholder="Enter nickname"></div>
+    <div class="player-input"><label class="player-color player2">Player 2:  </label><input type="text" id="player2-name" placeholder="Enter nickname"></div>
+    <div class="player-input"><label class="player-color player3">Player 3:  </label><input type="text" id="player3-name" placeholder="Enter nickname"></div>
+    <div class="player-input"><label class="player-color player4">Player 4:  </label><input type="text" id="player4-name" placeholder="Enter nickname"></div>
+    <input id="room-name-submit" type="button" value="Enter"><br>
+
+    <script>
+        document.querySelector('#room-name-input').focus();
+        document.querySelector('#room-name-input').onkeyup = function(event) {
+            if (event.key === 'Enter') {
+                document.querySelector('#room-name-submit').click();
+            }
+        };
+        document.querySelector('#room-name-submit').onclick = function(event) {
+				var roomName = document.querySelector('#room-name-input').value;
+				window.location.pathname = '/chat/' + roomName + '/';
+			};
+    </script>
+</body>
 </html>
