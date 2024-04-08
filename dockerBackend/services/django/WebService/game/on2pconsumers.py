@@ -64,28 +64,28 @@ class GameConsumer(AsyncWebsocketConsumer):
 				asyncio.create_task(self.ball_position_updater())
 
 		if self.game_state['connected_clients_count'] >= 3:
-			await self.send(text_data=json.dumps({
-				"type": "error",
-				"message": "Game is full. You cannot join this game."
-			}))
-			# self.game_state['connected_clients_count'] -= 1
-			await asyncio.sleep(3)
-			await self.close()
+            await self.send(text_data=json.dumps({
+                "type": "error",
+                "message": "Game is full. You cannot join this game."
+            }))
+            # self.game_state['connected_clients_count'] -= 1
+            await asyncio.sleep(3)
+            await self.close()
 
 	async def disconnect(self, close_code):
-		self.game_state['connected_clients_count'] -= 1
-		# self.heartbeat_task.cancel()
-		if self.game_state['connected_clients_count'] < 2:
-			print("!!!!!!!!!!!!!!!!!")
-			await self.channel_layer.group_send(
-				self.room_group_name,
-				{
-					"type": "game_over_message",
-					"message": "The other player has left. The game is over."
-				})
-			if self.game_state['connected_clients_count'] == 0:
-				game_manager.end_game(self.room_name)
-			await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        self.game_state['connected_clients_count'] -= 1
+        # self.heartbeat_task.cancel()
+        if self.game_state['connected_clients_count'] < 2:
+            print("!!!!!!!!!!!!!!!!!")
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "game_over_message",
+                    "message": "The other player has left. The game is over."
+                })
+            if self.game_state['connected_clients_count'] == 0:
+                game_manager.end_game(self.room_name)
+            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)

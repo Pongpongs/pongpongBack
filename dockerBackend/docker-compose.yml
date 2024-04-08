@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  django:
+    build:
+      context: ./services/django # dockerfile의 빌드 경로, 여기를 기준으로 Dockerfile을 지정함
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000" # ports는 삭제 예정
+    env_file:
+      - .env
+    networks:
+      - pongpong_network
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: redis:alpine
+    networks:
+      - pongpong_network
+
+  postgres:
+    image: postgres:latest
+    networks:
+      - pongpong_network
+    volumes:
+      - ./tools/init.sh:/docker-entrypoint-initdb.d/init.sh
+      # - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5  # healthcheck 를 막았을 때 되나?
+
+networks:
+  pongpong_network:
+    driver: bridge
+
+# volumes:
+#   db_data:
+#     driver_opts:
+#       o: bind
+#       type: none
+#       device: ./db_volume/data
