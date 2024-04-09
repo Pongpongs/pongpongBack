@@ -96,6 +96,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         if 'nick' in text_data_json:
             nickname = text_data_json['nick']
+            original_nickname = nickname
+            counter = 1
+            # 중복 닉네임 처리
+            while nickname in self.game_state['player_nicknames']:
+                counter += 1
+                nickname = f"{original_nickname}{counter}"
+            # 새로운 닉네임을 리스트에 추가
             if len(self.game_state['player_nicknames']) < self.game_state['connected_clients_count']:
                 self.game_state['player_nicknames'].append(nickname)
 
