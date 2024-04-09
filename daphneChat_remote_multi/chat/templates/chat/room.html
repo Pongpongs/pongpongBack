@@ -78,7 +78,8 @@
 
       var scoreBoard = {p1 : 0, p2: 0, p3: 0, p4: 0}
       var ballPosition = {x:0, y:0};
-			
+			var playerNickname = [,,,];
+
 			setInterval(() => {
 				if (chatSocket.readyState === WebSocket.OPEN) {
 						chatSocket.send(JSON.stringify({ 'type': "heartbeat" }));
@@ -162,6 +163,16 @@
           document.getElementById('scorePlayer2').innerText = data.score_player2;
 					document.getElementById('scorePlayer3').innerText = data.score_player3;
 					document.getElementById('scorePlayer4').innerText = data.score_player4;
+				}
+
+				if (data.player_nicknames !== undefined) {
+					//배열로 들어오는 player_nicknames 를 저장하기만 하면 됨.
+					nicknames = data.player_nicknames
+
+					for (var i = 0; i < 4; i++) {
+						const nickname = nicknames[i];
+						playerNickname[i] = nickname;
+					}	
 				}
 				
 			};
