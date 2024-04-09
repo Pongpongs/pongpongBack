@@ -22,7 +22,8 @@ class GameManager:
                 'game_over_flag': False,
                 'game_winner': 0,
                 'updating_ball_position': False,
-                'connected_clients_count': 0
+                'connected_clients_count': 0,
+                'player_nicknames':[]
             }
         return self.games[room_name]
 
@@ -55,7 +56,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
         # heartbeat added
 
-
         if self.game_state['connected_clients_count'] == 2:
             await asyncio.sleep(3)  # 클라이언트가 2개 연결된 후 3초 기다립니다.
             if not self.game_state['updating_ball_position']:
@@ -67,30 +67,38 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "type": "error",
                 "message": "Game is full. You cannot join this game."
             }))
-            self.game_state['connected_clients_count'] -= 1
+            # self.game_state['connected_clients_count'] -= 1
             await asyncio.sleep(3)
             await self.close()
+            
 
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
-        self.heartbeat_task.cancel()
-        if self.game_state['connected_clients_count'] > 0:
-
+        # self.heartbeat_task.cancel()
+        if self.game_state['connected_clients_count'] < 2:
+            print("!!!!!!!!!!!!!!!!!")
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     "type": "game_over_message",
                     "message": "The other player has left. The game is over."
                 })
+            if self.game_state['connected_clients_count'] == 0:
+                game_manager.end_game(self.room_name)
+            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-        if self.game_state['connected_clients_count'] == 0:
-            game_manager.end_game(self.room_name)
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
+
+        
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         if 'type' in text_data_json:
             self.last_heartbeat_time = time.time()
+        
+        if 'nick' in text_data_json:
+            nickname = text_data_json['nick']
+            if len(self.game_state['player_nicknames']) < self.game_state['connected_clients_count']:
+                self.game_state['player_nicknames'].append(nickname)
         
         if 'message' in text_data_json :
             message = text_data_json["message"]
@@ -182,7 +190,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'score_player1': self.game_state['score_player1'],
             'score_player2': self.game_state['score_player2'],
             'game_over_flag': self.game_state['game_over_flag'],
-            'game_winner': self.game_state['game_winner']
+            'game_winner': self.game_state['game_winner'],
+            'player_nicknames':self.game_state['player_nicknames']            
+
         }))
 
     async def game_over_message(self, event):

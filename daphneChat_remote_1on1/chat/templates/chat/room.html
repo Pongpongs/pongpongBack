@@ -58,13 +58,15 @@
       };
         
       var scoreBoard = {p1 : 0, p2: 0}
-      var ballPosition = {x:0, y:0};
-			
+      var ballPosition = {x:0, y:0}
+			var playerNickname = [,];
+
 			setInterval(() => {
 				if (chatSocket.readyState === WebSocket.OPEN) {
 						chatSocket.send(JSON.stringify({ 'type': "heartbeat" }));
 				}
 			});
+
 
 			document.addEventListener('keydown', function(event) {
             const keyName = event.key;
@@ -92,6 +94,8 @@
 					alert(data.message);
 					window.location.href = '/chat'; // 사용자가 확인을 누른 직후 리다이렉션
 				}
+
+
 
 				if (data.game_over_flag !== undefined) {
 					if (data.game_over_flag == true) {
@@ -128,8 +132,17 @@
           document.getElementById('scorePlayer2').innerText = data.score_player2;
 				}
 				
-			};
+				if (data.player_nicknames !== undefined) {
+					//배열로 들어오는 player_nicknames 를 저장하기만 하면 됨.
+					nicknames = data.player_nicknames
 
+					for (var i = 0; i < 2; i++) {
+						const nickname = nicknames[i];
+						playerNickname[i] = nickname;
+					}	
+				}
+
+			};
 			// 웹 소켓 강제 종료시 에러 처리 - 에러 로그 출력
 			chatSocket.onclose = function(event) {
 				console.error('chat socket closed unexpectedly');
