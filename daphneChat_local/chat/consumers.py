@@ -19,7 +19,7 @@ class GameManager:
             'play_bar1_position': {'x': 0, 'y': 9},
             'play_bar2_position': {'x': 0, 'y': -9},
             'ball_position': {'x': 0, 'y': 0},
-            'ball_velocity': {'x': 0.09, 'y': 0.06},
+            'ball_velocity': {'x': 0.12, 'y': 0.08},
             'score_player1': 0,
             'score_player2': 0,
             'game_over_flag': False,
@@ -89,16 +89,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         if keyStates.get('a'):
             self.game_state['play_bar1_position']['x'] = max(
-                -9, self.game_state['play_bar1_position']['x'] - 0.4)
+                -9, self.game_state['play_bar1_position']['x'] - 0.6)
         if keyStates.get('d'):
             self.game_state['play_bar1_position']['x'] = min(
-                9, self.game_state['play_bar1_position']['x'] + 0.4)
+                9, self.game_state['play_bar1_position']['x'] + 0.6)
         if keyStates.get('j'):
             self.game_state['play_bar2_position']['x'] = max(
-                -9, self.game_state['play_bar2_position']['x'] - 0.4)
+                -9, self.game_state['play_bar2_position']['x'] - 0.6)
         if keyStates.get('l'):
             self.game_state['play_bar2_position']['x'] = min(
-                9, self.game_state['play_bar2_position']['x'] + 0.4)
+                9, self.game_state['play_bar2_position']['x'] + 0.6)
 
     async def _update_ball_position(self):
         # 공 위치 업데이트
@@ -157,7 +157,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         while not self.game_state['game_over_flag']:
             await self._update_ball_position()
-            await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
+            await asyncio.sleep(0.01)  # 50번의 업데이트가 1초 동안 진행됨
 
         self.game_state['updating_ball_position'] = False
         self.game_state['game_over_flag'] = False
@@ -165,7 +165,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
         self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
         self.game_state['ball_position'] = {'x': 0, 'y': 0}
-        self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
+        self.game_state['ball_velocity'] = {'x': 0.12, 'y': 0.08}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
 

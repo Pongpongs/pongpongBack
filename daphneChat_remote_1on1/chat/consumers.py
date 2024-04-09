@@ -6,6 +6,7 @@ from asyncio import Lock
 import time
 # remote 1 on 1
 
+
 class GameManager:
     def __init__(self):
         self.games = {}
@@ -16,14 +17,14 @@ class GameManager:
                 'play_bar1_position': {'x': 0, 'y': 9},
                 'play_bar2_position': {'x': 0, 'y': -9},
                 'ball_position': {'x': 0, 'y': 0},
-                'ball_velocity': {'x': 0.09, 'y': 0.06},
+                'ball_velocity': {'x': 0.12, 'y': 0.08},
                 'score_player1': 0,
                 'score_player2': 0,
                 'game_over_flag': False,
                 'game_winner': 0,
                 'updating_ball_position': False,
                 'connected_clients_count': 0,
-                'player_nicknames':[]
+                'player_nicknames': []
             }
         return self.games[room_name]
 
@@ -31,7 +32,9 @@ class GameManager:
         if room_name in self.games:
             del self.games[room_name]
 
+
 game_manager = GameManager()
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
@@ -70,7 +73,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # self.game_state['connected_clients_count'] -= 1
             await asyncio.sleep(3)
             await self.close()
-            
 
     async def disconnect(self, close_code):
         self.game_state['connected_clients_count'] -= 1
@@ -87,20 +89,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 game_manager.end_game(self.room_name)
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-
-
-        
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         if 'type' in text_data_json:
             self.last_heartbeat_time = time.time()
-        
+
         if 'nick' in text_data_json:
             nickname = text_data_json['nick']
             if len(self.game_state['player_nicknames']) < self.game_state['connected_clients_count']:
                 self.game_state['player_nicknames'].append(nickname)
-        
-        if 'message' in text_data_json :
+
+        if 'message' in text_data_json:
             message = text_data_json["message"]
             if text_data_json.get('type') == "heartbeat":
                 self.last_heartbeat_time = time.time()
@@ -109,18 +108,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if self.player_number == 1:
                 if message == 'a':
                     self.game_state['play_bar1_position']['x'] = max(
-                        -9, self.game_state['play_bar1_position']['x'] - 0.4)
+                        -9, self.game_state['play_bar1_position']['x'] - 0.6)
                 elif message == 'd':
                     self.game_state['play_bar1_position']['x'] = min(
-                        9, self.game_state['play_bar1_position']['x'] + 0.4)
+                        9, self.game_state['play_bar1_position']['x'] + 0.6)
 
             elif self.player_number == 2:
                 if message == 'a':
                     self.game_state['play_bar2_position']['x'] = max(
-                        -9, self.game_state['play_bar2_position']['x'] - 0.4)
+                        -9, self.game_state['play_bar2_position']['x'] - 0.6)
                 elif message == 'd':
                     self.game_state['play_bar2_position']['x'] = min(
-                        9, self.game_state['play_bar2_position']['x'] + 0.4)
+                        9, self.game_state['play_bar2_position']['x'] + 0.6)
 
     async def _update_ball_position(self):
         # 공 위치 업데이트
@@ -169,7 +168,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         while not self.game_state['game_over_flag']:
             await self._update_ball_position()
-            await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
+            await asyncio.sleep(0.01)  # 50번의 업데이트가 1초 동안 진행됨
 
         self.game_state['updating_ball_position'] = False
         self.game_state['game_over_flag'] = False
@@ -177,7 +176,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
         self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
         self.game_state['ball_position'] = {'x': 0, 'y': 0}
-        self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
+        self.game_state['ball_velocity'] = {'x': 0.12, 'y': 0.08}
         self.game_state['score_player1'] = 0
         self.game_state['score_player2'] = 0
         game_manager.end_game(self.room_name)
@@ -191,7 +190,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'score_player2': self.game_state['score_player2'],
             'game_over_flag': self.game_state['game_over_flag'],
             'game_winner': self.game_state['game_winner'],
-            'player_nicknames':self.game_state['player_nicknames']            
+            'player_nicknames': self.game_state['player_nicknames']
 
         }))
 
