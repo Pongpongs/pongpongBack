@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./services/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    networks:
+      - pongpongnet
+    depends_on:
+      - pongfront
+      - pongback
+    container_name: nginx
+    restart: no
+
+  pongfront:
+    build:
+      context: ./services/pongpongFront
+      dockerfile: Dockerfile
+    networks:
+      - pongpongnet
+    container_name: front
+    restart: no
+
+  pongback:
+    build:
+      context: ./services/django # dockerfile의 빌드 경로, 여기를 기준으로 Dockerfile을 지정함
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    networks:
+      - pongpongnet
+    depends_on:
+      - redis
+      - postgres
+    container_name: django
+    restart: no
+
+  redis:
+    image: redis:alpine
+    networks:
+      - pongpongnet
+    container_name: redis
+    restart: no
+
+  postgres:
+    build:
+      context: ./services/postgres
+      dockerfile: Dockerfile
+    networks:
+      - pongpongnet
+    env_file:
+      - .env
+    container_name: postgres
+    restart: no
+
+networks:
+  pongpongnet:
+    driver: bridge
+    name: pongpongnet
