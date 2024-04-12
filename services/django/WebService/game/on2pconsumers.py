@@ -109,18 +109,18 @@ class GameConsumer(AsyncWebsocketConsumer):
 			if self.player_number == 1:
 				if message == 'a':
 					self.game_state['play_bar1_position']['x'] = max(
-						-9, self.game_state['play_bar1_position']['x'] - 0.6)
+						-9, self.game_state['play_bar1_position']['x'] - 0.4)
 				elif message == 'd':
 					self.game_state['play_bar1_position']['x'] = min(
-						9, self.game_state['play_bar1_position']['x'] + 0.6)
+						9, self.game_state['play_bar1_position']['x'] + 0.4)
 
 			elif self.player_number == 2:
 				if message == 'a':
 					self.game_state['play_bar2_position']['x'] = max(
-						-9, self.game_state['play_bar2_position']['x'] - 0.6)
+						-9, self.game_state['play_bar2_position']['x'] - 0.4)
 				elif message == 'd':
 					self.game_state['play_bar2_position']['x'] = min(
-						9, self.game_state['play_bar2_position']['x'] + 0.6)
+						9, self.game_state['play_bar2_position']['x'] + 0.4)
 
 	async def _update_ball_position(self):
 		# 공 위치 업데이트
@@ -169,7 +169,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 		while not self.game_state['game_over_flag']:
 			await self._update_ball_position()
-			await asyncio.sleep(0.01)  # 50번의 업데이트가 1초 동안 진행됨
+			await asyncio.sleep(0.02)  # 50번의 업데이트가 1초 동안 진행됨
 		
 		self.cleanup_game()
 
