@@ -45,7 +45,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		# group을 미리 만들거나 특정 닉네임을 기준으로 만드는방식?
 		# 그룹에 빈공간이 있는지, 특정 닉네님이 있는지 확인
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
-		self.room_group_name = "chat_4p" + self.room_name
+		self.room_group_name = "chat_2p" + self.room_name
 
 		await (self.channel_layer.group_add(
 			self.room_group_name,
