@@ -19,7 +19,7 @@ class GameManager:
 				'play_bar1_position': {'x': 0, 'y': 9},
 				'play_bar2_position': {'x': 0, 'y': -9},
 				'ball_position': {'x': 0, 'y': 0},
-				'ball_velocity': {'x': 0.12, 'y': 0.08},
+				'ball_velocity': {'x': 0.09, 'y': 0.06},
 				'score_player1': 0,
 				'score_player2': 0,
 				'game_over_flag': False,
@@ -182,7 +182,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.game_state['play_bar1_position'] = {'x': 0, 'y': 9}
 		self.game_state['play_bar2_position'] = {'x': 0, 'y': -9}
 		self.game_state['ball_position'] = {'x': 0, 'y': 0}
-		self.game_state['ball_velocity'] = {'x': 0.12, 'y': 0.08}
+		self.game_state['ball_velocity'] = {'x': 0.09, 'y': 0.06}
 		self.game_state['score_player1'] = 0
 		self.game_state['score_player2'] = 0
 		self.game_state['connected_clients_count'] = 0
