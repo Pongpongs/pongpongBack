@@ -9,6 +9,7 @@ import jwt
 # from datetime import datetime, timedelta
 
 # Create your views here.
+# 외부의 API 호출시 csrf 토큰을 전달할 방법이 없어 csrf_exempt로 
 @csrf_exempt
 def realback(request):
 	# POST 요청만 처리, 예기치 않은 요청 메소드는 거부
@@ -20,7 +21,7 @@ def realback(request):
 	token_scheme, token_value = token_header.split(' ')
 	if token_scheme.lower() != 'bearer':
 		return HttpResponse('Unauthorized - Invalid token scheme', status=401)
-	data = decode_token(token_value)
+	data = decode_token(token_value) # JWT 준수
 	if data is None:
 		return HttpResponse('Unauthorized - Decoding token error', status=401)
 	user_email = data.get('user_email')

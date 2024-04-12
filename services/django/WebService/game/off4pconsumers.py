@@ -65,9 +65,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.accept()
         await game_manager.increment_connected_clients(self.session_id)
 
-        self.heartbeat_interval = 10  # seconds
-        self.last_heartbeat_time = time.time()
-        self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
+
 
         if self.game_state['connected_clients_count'] == 1:
             await asyncio.sleep(3)  # 클라이언트가 2개 연결된 후 3초 기다립니다.
@@ -78,15 +76,12 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         await game_manager.decrement_connected_clients(self.session_id)
 
-        self.heartbeat_task.cancel()
-
         await self.channel_layer.group_discard(self.session_id, self.channel_name)
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         keyStates = text_data_json
 
-        self.last_heartbeat_time = time.time()
 
         if keyStates.get('q'):
             self.game_state['play_bar1_position']['x'] = max(
@@ -227,18 +222,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         game_manager.end_game_session(self.session_id)
 
-    async def check_heartbeat(self):
-        try:
-            while True:
-                await asyncio.sleep(self.heartbeat_interval)
-                if time.time() - self.last_heartbeat_time > self.heartbeat_interval:
-                    # Heartbeat timeout exceeded, close the connection
-                    print("Heartbeat timeout, closing connection")
-                    await self.close()
-                    break
-        except asyncio.CancelledError:
-            # Expected on disconnect
-            pass
+
 
     async def game_update(self, event):
         await self.send(text_data=json.dumps({

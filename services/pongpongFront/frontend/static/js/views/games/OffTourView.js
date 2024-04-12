@@ -31,8 +31,8 @@ export default class OffTourView extends AbstractView {
 	}
 
 	async initialize() {
-        console.log("Initializing OffTourView...");
-        console.log("roomName = ", this.roomName);
+        
+        
 		this.roomName = sessionStorage.getItem("room_name");
 		this.nicknames = JSON.parse(sessionStorage.getItem("nicknames"));
 		if (!this.roomName || !this.nicknames) {
@@ -169,10 +169,10 @@ export default class OffTourView extends AbstractView {
 	connectWebSocket(roomName) {
         const webSocketURL = `wss://pongpongstest.duckdns.org/b/ws/game/off/tour/${roomName}/`;
 
-		console.log('socket connecting~');
+		
 		this.gameSocket = new WebSocket(webSocketURL);
 
-		console.log(`gamesocket info = ${this.gameSocket}`);
+		
 		
 		document.addEventListener('keydown', (event) => {
 			if (['a', 'd', 'j', 'l'].includes(event.key)) {
@@ -195,11 +195,7 @@ export default class OffTourView extends AbstractView {
 			}
 		}.bind(this); // 이 부분은 connectWebSocket 메서드 안에서 this를 바인딩
 	
-		setInterval(() => {
-			if (this.gameSocket.readyState === WebSocket.OPEN) {
-				this.gameSocket.send(JSON.stringify({ type: "heartbeat" }));
-			}
-		}, 1000); // 10초마다 실행
+
 
 		this.gameSocket.onclose = function(event) {
 			if (event.code === 4001) {
@@ -235,25 +231,25 @@ export default class OffTourView extends AbstractView {
 
 					if (data.game_winner == 1) {
 						if (data.player1_id == 1) {
-							console.log("winner = " + this.nicknames[0]);
+							
 							gameOverMessage.innerHTML = "Player " + this.nicknames[0] + " Wins!"; // Player 1 승리 메시지
 							gameOverMessage.className = "winner1"; // 초록색 스타일 적용
 						}
 						if (data.player1_id == 3) {
-							console.log("winner = " + this.nicknames[2]);
+							
 
 							gameOverMessage.innerHTML = "Player " + this.nicknames[2] + " Wins!"; // Player 1 승리 메시지
 							gameOverMessage.className = "winner3"; // 초록색 스타일 적용
 						}
 					} else if (data.game_winner == 2) {
 						if (data.player2_id == 2) {
-							console.log("winner = " + this.nicknames[1]);
+							
 
 							gameOverMessage.innerHTML = "Player " + this.nicknames[1] + " Wins!"; // Player 2 승리 메시지
 							gameOverMessage.className = "winner2"; // 빨간색 스타일 적용
 						}
 						if (data.player2_id == 4) {
-							console.log("winner = " + this.nicknames[3]);
+							
 
 							gameOverMessage.innerHTML = "Player " + this.nicknames[3] + " Wins!"; // Player 2 승리 메시지
 							gameOverMessage.className = "winner4"; // 빨간색 스타일 적용
@@ -271,17 +267,17 @@ export default class OffTourView extends AbstractView {
 			}
 		
 			if (data.play_bar1_position !== undefined) {
-				//console.log('Position: ' + data.play_bar1_position); // 좌표 로깅
+				//
 				this.barPositions.bar1.x = data.play_bar1_position.x;
 				this.barPositions.bar1.y = data.play_bar1_position.y;
 			}
 			if (data.play_bar2_position !== undefined) {
-				// console.log('Position: ' + data.play_bar2_position); // 좌표 로깅
+				// 
 				this.barPositions.bar2.x = data.play_bar2_position.x;
 				this.barPositions.bar2.y = data.play_bar2_position.y;
 			}
 			if (data.ball_position !== undefined) {
-				// console.log('Ball Position: ', data.ball_position);
+				// 
 				this.ballPosition.x = data.ball_position.x;
 				this.ballPosition.y = data.ball_position.y;
 			}

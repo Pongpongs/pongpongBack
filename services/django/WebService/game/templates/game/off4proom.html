@@ -73,11 +73,7 @@
       var ballPosition = {x:0, y:0};
 			let keyStates = {'q': false, 'e': false, 'i': false, 'p':false, 'z': false, 'c': false, 'n': false, 'm':false};
 
-			setInterval(() => {
-				if (chatSocket.readyState === WebSocket.OPEN) {
-					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
-				}
-			}, 10000); // 10초마다 실행
+
 
 
 			document.addEventListener('keydown', function(event) {
@@ -129,28 +125,28 @@
 				}
 
 				if (data.play_bar1_position !== undefined) {
-        	//console.log('Position: ' + data.play_bar1_position); // 좌표 로깅
+        	
           barPositions.bar1.x = data.play_bar1_position.x;
           barPositions.bar1.y = data.play_bar1_position.y;
         }
         if (data.play_bar2_position !== undefined) {
-          // console.log('Position: ' + data.play_bar2_position); // 좌표 로깅
+          
           barPositions.bar2.x = data.play_bar2_position.x;
           barPositions.bar2.y = data.play_bar2_position.y;
         }
         if (data.play_bar3_position !== undefined) {
-          // console.log('Position: ' + data.play_bar3_position); // 좌표 로깅
+          
           barPositions.bar3.x = data.play_bar3_position.x;
           barPositions.bar3.y = data.play_bar3_position.y;
         }
         if (data.play_bar4_position !== undefined) {
-          // console.log('Position: ' + data.play_bar4_position); // 좌표 로깅
+          
           barPositions.bar4.x = data.play_bar4_position.x;
           barPositions.bar4.y = data.play_bar4_position.y;
         }
 				
         if (data.ball_position !== undefined) {
-          // console.log('Ball Position: ', data.ball_position);
+          
           ballPosition.x = data.ball_position.x;
           ballPosition.y = data.ball_position.y;
         }
@@ -165,7 +161,7 @@
 
 			// 웹 소켓 강제 종료시 에러 처리 - 에러 로그 출력
 			chatSocket.onclose = function(event) {
-				console.error('chat socket closed unexpectedly');
+				
 			};
 
 

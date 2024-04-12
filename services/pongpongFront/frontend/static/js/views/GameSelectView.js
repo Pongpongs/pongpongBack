@@ -98,7 +98,6 @@ export default class GameSelectView extends AbstractView {
 			const gameModeValue = document.querySelector('input[name="gameMode"]:checked').id;
             const roomNameValue = roomNameInput.value.trim();
 	
-			console.log(`Online/Offline: ${onlineOfflineValue}, Game Mode: ${gameModeValue}, Room Name: ${roomNameValue}`);
 	
 			// 경로 설정
 			let path = "/";

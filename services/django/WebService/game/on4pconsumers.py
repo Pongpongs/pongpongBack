@@ -60,9 +60,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 		self.player_number = self.game_state['connected_clients_count']
 
-		self.heartbeat_interval = 10  # seconds
-		self.last_heartbeat_time = time.time()
-		self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
 
 		if self.game_state['connected_clients_count'] == 4:
 			self.game_state['fullbang_flag'] = True;
@@ -82,7 +79,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		self.game_state['connected_clients_count'] -= 1
-		# self.heartbeat_task.cancel()
+		
 		if self.game_state['connected_clients_count'] < 4 and self.game_state['fullbang_flag'] == True:
 			await self.channel_layer.group_send(
 				self.room_group_name,
@@ -96,9 +93,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
-
-		if 'type' in text_data_json:
-			self.last_heartbeat_time = time.time()
 
 		if 'nick' in text_data_json:
 			nickname = text_data_json['nick']
@@ -262,16 +256,3 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'type': 'game_over',
 			'message': event['message']
 		}))
-
-	async def check_heartbeat(self):
-		try:
-			while True:
-				await asyncio.sleep(self.heartbeat_interval)
-				if time.time() - self.last_heartbeat_time > self.heartbeat_interval:
-					# Heartbeat timeout exceeded, close the connection
-					print("Heartbeat timeout, closing connection")
-					await self.close()
-					break
-		except asyncio.CancelledError:
-			# Expected on disconnect
-			pass

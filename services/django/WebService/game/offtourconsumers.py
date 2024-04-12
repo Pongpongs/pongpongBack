@@ -65,10 +65,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 		await game_manager.increment_connected_clients(self.session_id)
 
-		self.heartbeat_interval = 10  # seconds
-		self.last_heartbeat_time = time.time()
-		self.heartbeat_task = asyncio.create_task(self.check_heartbeat())
-
 		if self.game_state['connected_clients_count'] == 1:
 			await asyncio.sleep(3)  # 클라이언트가 2개 연결된 후 3초 기다립니다.
 			if not self.game_state['updating_ball_position']:
@@ -78,7 +74,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def disconnect(self, close_code):
 		await game_manager.decrement_connected_clients(self.session_id)
 
-		self.heartbeat_task.cancel()
 
 		await self.channel_layer.group_discard(self.session_id, self.channel_name)
 
@@ -86,8 +81,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		text_data_json = json.loads(text_data)
 		# 이제 keyStates는 {"a": true/false, "d": true/false, "j": true/false, "l": true/false} 형태입니다.
 		keyStates = text_data_json
-
-		self.last_heartbeat_time = time.time()
 
 		# 각 키에 대한 상태 확인 및 처리
 		if keyStates.get('a'):
@@ -169,19 +162,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 		await asyncio.sleep(3)
 
-	async def check_heartbeat(self):
-		try:
-			while True:
-				await asyncio.sleep(self.heartbeat_interval)
-				if time.time() - self.last_heartbeat_time > self.heartbeat_interval:
-					# Heartbeat timeout exceeded, close the connection
-					print("Heartbeat timeout, closing connection")
-					await self.close()
-					break
-		except asyncio.CancelledError:
-			# Expected on disconnect
-			pass
-
 	async def ball_position_updater(self):
 
 		winner1 = 0  # 첫번째 게임의 승자가 저장
@@ -205,7 +185,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		
 		await asyncio.sleep(2) # 누구대 누구 표시할 시간
 		
-		print("aaaa ", winner1, " ", winner2)
+		
 
 		self.game_state['player1_id'] = 3
 		self.game_state['player2_id'] = 4
@@ -223,7 +203,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			winner2 = self.game_state['player2_id']
 		await self.refresh_game_state()
 		# 두번째 경기 승자 저장
-		print("bbbb ", winner1, " ", winner2)
+		
 		
 		
 		
@@ -241,7 +221,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.refresh_game_state()
 
 		self.game_state['tournament_over_flag'] = True
-		print("!!!!!!!!!!!!")
+		
 
 		await self.channel_layer.group_send(
 			self.session_id,  # 세션 ID를 기반으로 그룹명 지정

@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function navigate(path) {
-	console.log("currentView", currentView);
+	
 	if (currentView && typeof currentView.cleanup === 'function') {
         currentView.cleanup();
 		history.replaceState(null, null, path);
@@ -110,7 +110,7 @@ function getCodeFromUrl() {
 
 async function getEmailAndCode(access_token) { 
     try {
-		console.log(`the access token when calling email = ${access_token}`);
+		
         const response = await fetch('/get/userinfo', {
             method: 'get',
             headers: {
@@ -126,7 +126,7 @@ async function getEmailAndCode(access_token) {
 
 async function fetchAccessToken(code) { 
     try {
-		console.log("code = ", code);
+		
         const response = await fetch('/get/security', { 
             method: 'POST',
             headers: {
@@ -135,13 +135,13 @@ async function fetchAccessToken(code) {
             body: JSON.stringify({ code: code })
         });
         const data = await response.json();
-		console.log("data = ", data);
+		
 
         if (data.access_token) {
             localStorage.setItem('access_token', data.access_token);
 			localStorage.setItem('expire_time', Math.floor(Date.now() / 1000) + data.expires_in);
         } else {
-            console.log('Failed to obtain access token.');
+            
         }
     } catch (error) {
         console.error('Error fetching access token:', error);

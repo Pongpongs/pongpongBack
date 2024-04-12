@@ -31,15 +31,15 @@ export default class Off2View extends AbstractView {
     }
 
 	async initialize() {
-        console.log("Initializing Off2View...");
+        
         const roomName = sessionStorage.getItem("room_name");
 		const nicknames = JSON.parse(sessionStorage.getItem("nicknames"));
 		if (!roomName || !nicknames) {
 			this.navigate('/game/select');
 			return;
 		}
-        console.log("roomName = ", roomName);
-        console.log("nicknames = ", nicknames);
+        
+        
 		sessionStorage.removeItem('room_name');
 		sessionStorage.removeItem('nicknames');
     
@@ -53,9 +53,9 @@ export default class Off2View extends AbstractView {
 			if (player1NameElement) player1NameElement.innerText = "Player 1";
 			if (player2NameElement) player2NameElement.innerText = "Player 2";
 		}
-		console.log(nicknames);
-		console.log(player1NameElement.innerText);
-		console.log(player2NameElement.innerText);
+		
+		
+		
 
 		this.setupThreeJS();
         this.connectWebSocket(roomName);
@@ -158,10 +158,10 @@ export default class Off2View extends AbstractView {
 	connectWebSocket(roomName) {
         const webSocketURL = `wss://pongpongstest.duckdns.org/b/ws/game/off/2p/${roomName}/`;
 
-		console.log('socket connecting~');
+		
 		this.gameSocket = new WebSocket(webSocketURL);
 
-		console.log(`gamesocket info = ${this.gameSocket}`);
+		
 		
 		document.addEventListener('keydown', (event) => {
 			if (['a', 'd', 'j', 'l'].includes(event.key)) {
@@ -184,11 +184,7 @@ export default class Off2View extends AbstractView {
 			}
 		}.bind(this); // 이 부분은 connectWebSocket 메서드 안에서 this를 바인딩
 	
-		setInterval(() => {
-			if (this.gameSocket.readyState === WebSocket.OPEN) {
-				this.gameSocket.send(JSON.stringify({ type: "heartbeat" }));
-			}
-		}, 1000); // 10초마다 실행
+
 
 		this.gameSocket.onclose = function(event) {
 			if (event.code === 4001) {
@@ -203,7 +199,7 @@ export default class Off2View extends AbstractView {
 		// 채팅창 - 채팅 내역 출력
 		this.gameSocket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-			console.log(`log = ${data}`);
+			
 			
 			if (data.game_over_flag !== undefined) {
 				if (data.game_over_flag == true) {
@@ -224,18 +220,18 @@ export default class Off2View extends AbstractView {
 			}
 
 			if (data.play_bar1_position !== undefined) {
-			//console.log('Position: ' + data.play_bar1_position); // 좌표 로깅
+			
 	  			this.barPositions.bar1.x = data.play_bar1_position.x;
 	  			this.barPositions.bar1.y = data.play_bar1_position.y;
 			}
 			
 			if (data.play_bar2_position !== undefined) {
-			// console.log('Position: ' + data.play_bar2_position); // 좌표 로깅
+			
 				this.barPositions.bar2.x = data.play_bar2_position.x;
 				this.barPositions.bar2.y = data.play_bar2_position.y;
 			}
 			if (data.ball_position !== undefined) {
-				// console.log('Ball Position: ', data.ball_position);
+				
 				this.ballPosition.x = data.ball_position.x;
 				this.ballPosition.y = data.ball_position.y;
 			}

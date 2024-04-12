@@ -6,8 +6,8 @@ export default class FA2Modal {
         const code = userEmailAndCode.code;
 		const backendURL = '/backend/send';
 
-        console.log('userEmail in 2FA = ', userEmail);
-        console.log('code in 2FA = ', code);
+    
+    
 
 		const modalHTML = `
 			<div id="fa2-modal" class="modal">
@@ -46,7 +46,7 @@ export default class FA2Modal {
                         })
                     });
 
-					console.log("returned status = ", response.status);
+				
 
                     if (200 <= response.status && response.status < 300) {
                         document.getElementById('attempt-message').innerText = 'The code is right!';
@@ -64,7 +64,7 @@ export default class FA2Modal {
                     document.getElementById('attempt-message').innerText = `The code is invalid (${FA2Modal.attemptCount} / 3)`;
                 } else {
                     localStorage.clear();
-					console.log('clear localstorage!!!');
+				
 					window.location.href = '/';
                 }
             }

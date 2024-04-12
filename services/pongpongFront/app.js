@@ -49,7 +49,7 @@ app.post('/backend/send', async (req, res) => {
 	jwt_secret_key,
 	{expiresIn: '1h'});
 
-	// console.log(`jwt token = ${jwt_token}`);
+	
     try {
         const response = await fetch(realBackendURL, {
             method: 'POST',
@@ -83,7 +83,7 @@ app.get('/get/security', (req, res) => {
 app.post('/get/security', (req, res) => {
     const code = req.body.code;
 
-	console.log("code = ", code);
+	
     const postData = querystring.stringify({
         grant_type: 'authorization_code',
         client_id: process.env.CLIENT_ID,
@@ -108,7 +108,7 @@ app.post('/get/security', (req, res) => {
         });
         response.on('end', () => {
             res.json(JSON.parse(data));
-			console.log("request === ", JSON.parse(data));
+			
         });
     });
 
@@ -172,7 +172,7 @@ app.get('/get/userinfo', (req, res) => {
 
         try {
             let info = await transporter.sendMail(mailOptions);
-            console.log('Email sent:', info.response);
+            
         } catch (error) {
             console.error('Error sending email:', error);
         }
@@ -196,5 +196,5 @@ app.get('/get/userinfo', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at https://pongpongstest.duckdns.org`);
+    
 });
