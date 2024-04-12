@@ -90,11 +90,7 @@
         }
       }
 
-			setInterval(() => {
-				if (chatSocket.readyState === WebSocket.OPEN) {
-					chatSocket.send(JSON.stringify({ type: "heartbeat" }));
-				}
-			}, 10000); // 10초마다 실행
+
 
 
 			chatSocket.onopen = function(event) {
@@ -107,7 +103,7 @@
             // 사용자가 확인을 누른 후 현재 페이지를 닫음
             window.close();
         } else {
-            console.error('WebSocket connection closed unexpectedly.');
+            
         }
     	};
 			
@@ -134,18 +130,16 @@
 				}
 
 				if (data.play_bar1_position !== undefined) {
-        	//console.log('Position: ' + data.play_bar1_position); // 좌표 로깅
           barPositions.bar1.x = data.play_bar1_position.x;
           barPositions.bar1.y = data.play_bar1_position.y;
                 
         }
         if (data.play_bar2_position !== undefined) {
-          // console.log('Position: ' + data.play_bar2_position); // 좌표 로깅
           barPositions.bar2.x = data.play_bar2_position.x;
           barPositions.bar2.y = data.play_bar2_position.y;
         }
         if (data.ball_position !== undefined) {
-          // console.log('Ball Position: ', data.ball_position);
+          
           ballPosition.x = data.ball_position.x;
           ballPosition.y = data.ball_position.y;
         }

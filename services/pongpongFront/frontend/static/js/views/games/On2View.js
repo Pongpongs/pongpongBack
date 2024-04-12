@@ -33,7 +33,7 @@ export default class On2View extends AbstractView {
 	}
 
 	async initialize() {
-        console.log("Initializing On2View...");
+        
         this.roomName = sessionStorage.getItem("room_name");
 		this.nicknames = JSON.parse(sessionStorage.getItem("nicknames"));
 		if (!this.roomName || !this.nicknames) {
@@ -146,16 +146,12 @@ export default class On2View extends AbstractView {
 			alert("Invalid Access !!!");
 			window.location.href = '/game/select';
 		}
-		console.log('socket connecting~');
+		
 		this.gameSocket = new WebSocket(webSocketURL);
 
 		setTimeout(() => this.gameSocket.send(JSON.stringify({ nick: this.nicknames[0] })), 3000);
 
-		setInterval(() => {
-			if (this.gameSocket.readyState === WebSocket.OPEN) {
-				this.gameSocket.send(JSON.stringify({ type: "heartbeat" }));
-			}
-		}, 1000); // 10초마다 실행
+
 
 		document.addEventListener('keydown', (event) => {
 			const keyName = event.key;
@@ -195,7 +191,7 @@ export default class On2View extends AbstractView {
 			}
 
 			if (data.type === "game_over") {
-				// console.log("!!!!!!!!!!!");
+				// 
 				alert(data.message);
 				window.location.href = '/game/select'; // 사용자가 확인을 누른 직후 리다이렉션
 			}

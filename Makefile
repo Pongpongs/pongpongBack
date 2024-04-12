@@ -1,8 +1,9 @@
 # @ : make가 해당 명령줄을 실행한다는 내용이 터미널에 나오지 않게 함, echo의 경우 echo 내용만 출력됨
 # mkdir -p : 에러 출력 방지
 all:
-	@docker compose -f ./docker-compose.yml --env-file ./.env up -d --build
-
+	@docker compose up --build
+#	@docker compose -f ./docker-compose.yml up -d --build
+#	@docker compose -f ./docker-compose.yml --env-file ./.env up -d --build
 down:
 	@docker compose -f ./docker-compose.yml --env-file ./.env down
 
