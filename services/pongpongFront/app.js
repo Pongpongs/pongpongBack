@@ -39,7 +39,7 @@ app.post('/backend/send', async (req, res) => {
     // const realBackendURL = 'https://pongpongback.duckdns.org/realback/send';
     const realBackendURL = 'https://pongpongstest.duckdns.org/b/realback/send';
 	
-	const jwt_secret_key = 'we_are_who_we_are_pongpongs';
+	const jwt_secret_key = process.env.JWT_KEY;
     const { userEmail, access_token } = req.body;
 
 	const jwt_token = jwt.sign({
