@@ -16,9 +16,9 @@ export default class LoginModal {
 			this.redirectToLogin();
 		});
     }
-
+	
     static redirectToLogin() {
-        const redirectUri = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-38e1085a57405a04552b3a4b255d1b9a1708d9a23637ac72693e9469b06a779f&redirect_uri=https%3A%2F%2Fpongpongstest.duckdns.org%2Fget%2Fsecurity&response_type=code';
+        const redirectUri = `https://api.intra.42.fr/oauth/authorize?client_id=${CLIENT_ID_FOR_F}&redirect_uri=https%3A%2F%2Fpongpongstest.duckdns.org%2Fget%2Fsecurity&response_type=code`;
         window.location.href = redirectUri;
     }
 }

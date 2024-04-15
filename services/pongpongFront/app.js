@@ -8,8 +8,23 @@ const port = 3000;
 const fs = require('fs');
 const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
+const webpack = require('webpack');
+
 require('dotenv').config();
 
+module.exports = {
+    entry: './frontend/static/js/index.js',
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js'
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'CLIENT_ID_FOR_F': JSON.stringify(process.env.CLIENT_ID),
+        }),
+    ],
+    // Additional configurations such as loaders, resolve options, etc.
+};
 
 const privateKeyPath = process.env.PRIVATE_KEY_PATH;
 const certificatePath = process.env.CERTIFICATE_PATH;
